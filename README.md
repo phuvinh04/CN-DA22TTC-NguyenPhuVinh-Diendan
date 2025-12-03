@@ -235,6 +235,5 @@ Nếu gặp vấn đề, vui lòng:
 
 ---
 
-**Phát triển bởi:** Diễn Đàn Chuyên Ngành Team  
-**Version:** 1.0.0  
-**Ngày cập nhật:** 2024
+**Phát triển bởi:** Nguyễn Phú Vinh  
+
