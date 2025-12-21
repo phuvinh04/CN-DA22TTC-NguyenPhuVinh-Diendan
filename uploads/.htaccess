@@ -1,0 +1,17 @@
+# Chỉ cho phép truy cập file ảnh
+<FilesMatch "\.(jpg|jpeg|png|gif|webp)$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
+
+# Chặn thực thi PHP trong thư mục này
+<FilesMatch "\.php$">
+    Order Deny,Allow
+    Deny from all
+</FilesMatch>
+
+# Chặn truy cập các file khác
+<FilesMatch "^(?!.*\.(jpg|jpeg|png|gif|webp)$)">
+    Order Deny,Allow
+    Deny from all
+</FilesMatch>

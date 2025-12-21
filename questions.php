@@ -1,9 +1,16 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 $pageTitle = 'Danh sách câu hỏi';
 require_once 'config/database.php';
+require_once 'config/session.php';
+require_once 'includes/badge_helper.php';
+
+// Yêu cầu đăng nhập
+$currentUser = getCurrentUser();
+if (!$currentUser) {
+    header('Location: login.php');
+    exit();
+}
+
 require_once 'includes/header.php';
 
 // Phân trang
@@ -11,12 +18,22 @@ $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $perPage = 15;
 $offset = ($page - 1) * $perPage;
 
-// Lọc theo tag
+// Lọc và sắp xếp
 $tagFilter = $_GET['tag'] ?? '';
 $searchQuery = $_GET['q'] ?? '';
+$sortBy = $_GET['sort'] ?? 'newest';
 
-// Build query
-$whereClause = "WHERE 1=1";
+// Xác định ORDER BY
+$orderBy = match($sortBy) {
+    'oldest' => 'd.NGAYDANG ASC',
+    'most_answers' => 'SoCauTraLoi DESC, d.NGAYDANG DESC',
+    'most_views' => 'ch.LUOTXEM DESC, d.NGAYDANG DESC',
+    'unanswered' => 'SoCauTraLoi ASC, d.NGAYDANG DESC',
+    default => 'd.NGAYDANG DESC'
+};
+
+// Build query - chỉ hiện câu hỏi đã duyệt (open hoặc closed)
+$whereClause = "WHERE ch.TRANGTHAI IN ('open', 'closed')";
 $params = [];
 
 if ($tagFilter) {
@@ -46,19 +63,20 @@ $questionsQuery = "SELECT
     ch.TIEUDE,
     ch.LUOTXEM,
     ch.TRANGTHAI,
+    nd.MANGUOIDUNG,
     nd.HOTEN AS NguoiDat,
     nd.ANHDAIDIEN,
     t.TENTHE AS Tag,
     t.MATHE,
     d.NGAYDANG,
     d.NOIDUNG,
-    (SELECT COUNT(*) FROM TRALOI tl WHERE tl.MACAUHOI = ch.MACAUHOI) AS SoCauTraLoi
+    (SELECT COUNT(*) FROM TRALOI tl WHERE tl.MACAUHOI = ch.MACAUHOI AND (tl.TRANGTHAI = 'approved' OR tl.TRANGTHAI IS NULL)) AS SoCauTraLoi
 FROM CAUHOI ch
 INNER JOIN DAT d ON ch.MACAUHOI = d.MACAUHOI
 INNER JOIN NGUOIDUNG nd ON d.MANGUOIDUNG = nd.MANGUOIDUNG
 INNER JOIN TAG t ON ch.MATHE = t.MATHE
 $whereClause
-ORDER BY d.NGAYDANG DESC
+ORDER BY $orderBy
 LIMIT $perPage OFFSET $offset";
 
 $stmt = $conn->prepare($questionsQuery);
@@ -70,51 +88,78 @@ $tagsQuery = "SELECT MATHE, TENTHE FROM TAG ORDER BY TENTHE";
 $allTags = $conn->query($tagsQuery)->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<main class="py-4">
+<main class="py-5">
     <div class="container">
-        <div class="row mb-4">
-            <div class="col-md-8">
-                <h2><i class="bi bi-question-circle-fill text-primary me-2"></i>Tất cả câu hỏi</h2>
-                <p class="text-muted">Tìm thấy <?php echo number_format($totalQuestions); ?> câu hỏi</p>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="mb-1">Tất cả câu hỏi</h2>
+                <p class="text-muted mb-0">Tìm thấy <?php echo number_format($totalQuestions); ?> câu hỏi</p>
             </div>
-            <div class="col-md-4 text-end">
-                <?php if ($currentUser): ?>
-                <a href="ask-question.php" class="btn btn-primary">
-                    <i class="bi bi-plus-circle me-2"></i>Đặt câu hỏi
-                </a>
-                <?php endif; ?>
-            </div>
+            <?php if ($currentUser): ?>
+            <a href="ask-question.php" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Đặt câu hỏi
+            </a>
+            <?php endif; ?>
         </div>
 
         <div class="row">
             <!-- Filters -->
             <div class="col-lg-3 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title mb-3">Bộ lọc</h5>
-                        
-                        <!-- Search -->
-                        <form method="GET" action="" class="mb-3">
-                            <div class="input-group input-group-sm">
-                                <input type="text" class="form-control" name="q" placeholder="Tìm kiếm..." value="<?php echo htmlspecialchars($searchQuery); ?>">
-                                <button class="btn btn-primary" type="submit">
-                                    <i class="bi bi-search"></i>
-                                </button>
-                            </div>
-                        </form>
-
-                        <!-- Tags Filter -->
-                        <h6 class="mb-2">Lọc theo Tag</h6>
-                        <div class="list-group list-group-flush">
-                            <a href="questions.php" class="list-group-item list-group-item-action border-0 px-0 <?php echo !$tagFilter ? 'active' : ''; ?>">
-                                Tất cả
-                            </a>
-                            <?php foreach ($allTags as $tag): ?>
-                            <a href="questions.php?tag=<?php echo $tag['MATHE']; ?>" class="list-group-item list-group-item-action border-0 px-0 <?php echo $tagFilter === $tag['MATHE'] ? 'active' : ''; ?>">
-                                <?php echo htmlspecialchars($tag['TENTHE']); ?>
-                            </a>
-                            <?php endforeach; ?>
+                <div class="sidebar-widget">
+                    <h5><i class="bi bi-funnel"></i> Bộ lọc</h5>
+                    
+                    <!-- Search -->
+                    <form method="GET" action="" class="mb-4">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="q" placeholder="Tìm kiếm..." value="<?php echo htmlspecialchars($searchQuery); ?>">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="bi bi-search"></i>
+                            </button>
                         </div>
+                        <?php if ($tagFilter): ?>
+                        <input type="hidden" name="tag" value="<?php echo htmlspecialchars($tagFilter); ?>">
+                        <?php endif; ?>
+                        <?php if ($sortBy !== 'newest'): ?>
+                        <input type="hidden" name="sort" value="<?php echo htmlspecialchars($sortBy); ?>">
+                        <?php endif; ?>
+                    </form>
+
+                    <!-- Sort Options -->
+                    <h6 class="mb-3" style="font-size: var(--font-sm); color: var(--gray-500);">SẮP XẾP</h6>
+                    <div class="d-flex flex-column gap-1 mb-4">
+                        <a href="?sort=newest<?php echo $tagFilter ? '&tag='.$tagFilter : ''; ?><?php echo $searchQuery ? '&q='.urlencode($searchQuery) : ''; ?>" 
+                           class="btn btn-sm <?php echo $sortBy === 'newest' ? 'btn-primary' : 'btn-outline-secondary'; ?>">
+                            <i class="bi bi-clock me-1"></i>Mới nhất
+                        </a>
+                        <a href="?sort=oldest<?php echo $tagFilter ? '&tag='.$tagFilter : ''; ?><?php echo $searchQuery ? '&q='.urlencode($searchQuery) : ''; ?>" 
+                           class="btn btn-sm <?php echo $sortBy === 'oldest' ? 'btn-primary' : 'btn-outline-secondary'; ?>">
+                            <i class="bi bi-clock-history me-1"></i>Cũ nhất
+                        </a>
+                        <a href="?sort=most_answers<?php echo $tagFilter ? '&tag='.$tagFilter : ''; ?><?php echo $searchQuery ? '&q='.urlencode($searchQuery) : ''; ?>" 
+                           class="btn btn-sm <?php echo $sortBy === 'most_answers' ? 'btn-primary' : 'btn-outline-secondary'; ?>">
+                            <i class="bi bi-chat-dots me-1"></i>Nhiều trả lời
+                        </a>
+                        <a href="?sort=most_views<?php echo $tagFilter ? '&tag='.$tagFilter : ''; ?><?php echo $searchQuery ? '&q='.urlencode($searchQuery) : ''; ?>" 
+                           class="btn btn-sm <?php echo $sortBy === 'most_views' ? 'btn-primary' : 'btn-outline-secondary'; ?>">
+                            <i class="bi bi-eye me-1"></i>Nhiều lượt xem
+                        </a>
+                        <a href="?sort=unanswered<?php echo $tagFilter ? '&tag='.$tagFilter : ''; ?><?php echo $searchQuery ? '&q='.urlencode($searchQuery) : ''; ?>" 
+                           class="btn btn-sm <?php echo $sortBy === 'unanswered' ? 'btn-primary' : 'btn-outline-secondary'; ?>">
+                            <i class="bi bi-question-circle me-1"></i>Chưa trả lời
+                        </a>
+                    </div>
+
+                    <!-- Tags Filter -->
+                    <h6 class="mb-3" style="font-size: var(--font-sm); color: var(--gray-500);">LỌC THEO TAG</h6>
+                    <div class="d-flex flex-column gap-1">
+                        <a href="questions.php" class="tag <?php echo !$tagFilter ? 'active' : ''; ?>" style="<?php echo !$tagFilter ? 'background: var(--primary-600); color: white;' : ''; ?>">
+                            Tất cả
+                        </a>
+                        <?php foreach ($allTags as $tag): ?>
+                        <a href="questions.php?tag=<?php echo $tag['MATHE']; ?>" class="tag <?php echo $tagFilter === $tag['MATHE'] ? 'active' : ''; ?>" style="<?php echo $tagFilter === $tag['MATHE'] ? 'background: var(--primary-600); color: white;' : ''; ?>">
+                            <?php echo htmlspecialchars($tag['TENTHE']); ?>
+                        </a>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             </div>
@@ -163,8 +208,8 @@ $allTags = $conn->query($tagsQuery)->fetchAll(PDO::FETCH_ASSOC);
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-center text-muted small">
-                                        <img src="<?php echo htmlspecialchars($question['ANHDAIDIEN']); ?>" alt="Avatar" class="user-avatar-sm me-2">
-                                        <span><?php echo htmlspecialchars($question['NguoiDat']); ?></span>
+                                        <?php echo renderAvatarWithFrame($question['ANHDAIDIEN'], $question['MANGUOIDUNG'], 'sm', false); ?>
+                                        <span class="ms-2"><?php echo htmlspecialchars($question['NguoiDat']); ?></span>
                                         <span class="ms-2"><?php echo date('d/m/Y H:i', strtotime($question['NGAYDANG'])); ?></span>
                                     </div>
                                 </div>

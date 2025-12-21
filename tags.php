@@ -1,6 +1,15 @@
 <?php
 $pageTitle = 'Tags';
 require_once 'config/database.php';
+require_once 'config/session.php';
+
+// Yêu cầu đăng nhập
+$currentUser = getCurrentUser();
+if (!$currentUser) {
+    header('Location: login.php');
+    exit();
+}
+
 require_once 'includes/header.php';
 
 // Lấy danh sách tags với số lượng câu hỏi

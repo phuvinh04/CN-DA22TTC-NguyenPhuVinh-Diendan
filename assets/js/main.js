@@ -1,511 +1,362 @@
-// Main JavaScript for Forum
+/**
+ * Main JavaScript - Diễn Đàn Chuyên Ngành
+ */
 
-// Smooth scroll
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({ behavior: 'smooth' });
-        }
-    });
-});
+// Toast Notification System
+const Toast = {
+  container: null,
 
-// Auto-hide alerts
-document.addEventListener('DOMContentLoaded', function() {
-    const alerts = document.querySelectorAll('.alert');
-    alerts.forEach(alert => {
-        setTimeout(() => {
-            alert.style.transition = 'opacity 0.3s';
-            alert.style.opacity = '0';
-            setTimeout(() => alert.remove(), 300);
-        }, 5000);
-    });
-});
-
-// Confirm delete
-function confirmDelete(message) {
-    return confirm(message || 'Bạn có chắc chắn muốn xóa?');
-}
-
-// Toggle password visibility
-function togglePassword(inputId) {
-    const input = document.getElementById(inputId);
-    const icon = event.target;
-    
-    if (input.type === 'password') {
-        input.type = 'text';
-        icon.classList.remove('bi-eye');
-        icon.classList.add('bi-eye-slash');
-    } else {
-        input.type = 'password';
-        icon.classList.remove('bi-eye-slash');
-        icon.classList.add('bi-eye');
+  init() {
+    if (!this.container) {
+      this.container = document.createElement('div');
+      this.container.className = 'toast-container';
+      document.body.appendChild(this.container);
     }
-}
+  },
 
-// Form validation
-(function() {
-    'use strict';
-    const forms = document.querySelectorAll('.needs-validation');
-    
-    Array.from(forms).forEach(form => {
-        form.addEventListener('submit', event => {
-            if (!form.checkValidity()) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            form.classList.add('was-validated');
-        }, false);
-    });
-})();
+  show(message, type = 'info', title = '', duration = 4000) {
+    this.init();
 
-// Lazy load images
-if ('IntersectionObserver' in window) {
-    const imageObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src;
-                img.classList.remove('lazy');
-                imageObserver.unobserve(img);
-            }
-        });
-    });
-
-    document.querySelectorAll('img.lazy').forEach(img => {
-        imageObserver.observe(img);
-    });
-}
-
-// Search with debounce
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
+    const icons = {
+      success: 'bi-check-circle-fill',
+      error: 'bi-x-circle-fill',
+      warning: 'bi-exclamation-triangle-fill',
+      info: 'bi-info-circle-fill'
     };
-}
 
-// Live search
-const searchInput = document.querySelector('input[name="q"]');
-if (searchInput) {
-    searchInput.addEventListener('input', debounce(function(e) {
-        const query = e.target.value;
-        if (query.length >= 3) {
-            // Implement live search here
-            console.log('Searching for:', query);
-        }
-    }, 300));
-}
+    const titles = {
+      success: 'Thành công',
+      error: 'Lỗi',
+      warning: 'Cảnh báo',
+      info: 'Thông báo'
+    };
 
-// Star Rating functionality
-function rate(type, id, rating) {
-    console.log('Rating:', type, id, rating);
-    
-    // Xác định base path dựa trên URL hiện tại
-    let basePath = '';
-    const path = window.location.pathname;
-    if (path.includes('/user/') || path.includes('/admin/')) {
-        basePath = '../';
-    }
-    
-    console.log('Fetching:', basePath + 'api/vote.php');
-    
-    fetch(basePath + 'api/vote.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            type: type,
-            id: id,
-            rating: rating
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Update star display
-            const ratingContainer = document.querySelector(`[data-rating-id="${id}"]`);
-            if (ratingContainer) {
-                // Update average rating display
-                const avgDisplay = ratingContainer.querySelector('.avg-rating');
-                if (avgDisplay) {
-                    avgDisplay.textContent = data.avgRating;
-                }
-                
-                // Update total ratings count
-                const countDisplay = ratingContainer.querySelector('.rating-count');
-                if (countDisplay) {
-                    countDisplay.textContent = `(${data.totalRatings} đánh giá)`;
-                }
-                
-                // Update star visual
-                updateStarDisplay(ratingContainer, data.avgRating, data.userRating);
-            }
-            
-            showToast(data.message, 'success');
-        } else {
-            showToast(data.message, 'danger');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showToast('Có lỗi xảy ra', 'danger');
-    });
-}
-
-// Update star display based on rating
-function updateStarDisplay(container, avgRating, userRating) {
-    const stars = container.querySelectorAll('.star-btn');
-    stars.forEach((star, index) => {
-        const starValue = index + 1;
-        star.classList.remove('active', 'user-rated');
-        
-        // Highlight stars up to average
-        if (starValue <= Math.round(avgRating)) {
-            star.classList.add('active');
-        }
-        
-        // Mark user's rating
-        if (userRating && starValue <= userRating) {
-            star.classList.add('user-rated');
-        }
-    });
-}
-
-// Hover effect for stars
-function initStarRating() {
-    document.querySelectorAll('.star-rating').forEach(container => {
-        const stars = container.querySelectorAll('.star-btn');
-        
-        stars.forEach((star, index) => {
-            // Hover effect
-            star.addEventListener('mouseenter', () => {
-                stars.forEach((s, i) => {
-                    if (i <= index) {
-                        s.classList.add('hover');
-                    } else {
-                        s.classList.remove('hover');
-                    }
-                });
-            });
-            
-            star.addEventListener('mouseleave', () => {
-                stars.forEach(s => s.classList.remove('hover'));
-            });
-        });
-    });
-}
-
-// Initialize star rating on page load
-document.addEventListener('DOMContentLoaded', initStarRating);
-
-// Copy code to clipboard
-document.querySelectorAll('pre code').forEach(block => {
-    const button = document.createElement('button');
-    button.className = 'btn btn-sm btn-outline-secondary copy-btn';
-    button.innerHTML = '<i class="bi bi-clipboard"></i> Copy';
-    button.addEventListener('click', () => {
-        navigator.clipboard.writeText(block.textContent);
-        button.innerHTML = '<i class="bi bi-check"></i> Copied!';
-        setTimeout(() => {
-            button.innerHTML = '<i class="bi bi-clipboard"></i> Copy';
-        }, 2000);
-    });
-    block.parentElement.style.position = 'relative';
-    block.parentElement.appendChild(button);
-});
-
-// Mobile sidebar toggle
-const sidebarToggle = document.querySelector('.sidebar-toggle');
-const sidebar = document.querySelector('.admin-sidebar');
-
-if (sidebarToggle && sidebar) {
-    sidebarToggle.addEventListener('click', () => {
-        sidebar.classList.toggle('show');
-    });
-}
-
-// Tooltip initialization
-const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
-
-// Toast notifications
-function showToast(message, type = 'success') {
-    const toastContainer = document.getElementById('toastContainer') || createToastContainer();
     const toast = document.createElement('div');
-    toast.className = `toast align-items-center text-white bg-${type} border-0`;
-    toast.setAttribute('role', 'alert');
-    toast.innerHTML = `
-        <div class="d-flex">
-            <div class="toast-body">${message}</div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-        </div>
-    `;
-    toastContainer.appendChild(toast);
-    const bsToast = new bootstrap.Toast(toast);
-    bsToast.show();
-    toast.addEventListener('hidden.bs.toast', () => toast.remove());
-}
+    toast.className = 'toast ' + type;
+    toast.innerHTML = '<i class="toast-icon bi ' + icons[type] + '"></i>' +
+      '<div class="toast-content">' +
+      '<div class="toast-title">' + (title || titles[type]) + '</div>' +
+      '<div class="toast-message">' + message + '</div>' +
+      '</div>' +
+      '<button class="toast-close" onclick="Toast.close(this.parentElement)">' +
+      '<i class="bi bi-x"></i>' +
+      '</button>';
 
-function createToastContainer() {
-    const container = document.createElement('div');
-    container.id = 'toastContainer';
-    container.className = 'toast-container position-fixed top-0 end-0 p-3';
-    document.body.appendChild(container);
-    return container;
-}
+    this.container.appendChild(toast);
 
-// Character counter for textareas
-document.querySelectorAll('textarea[maxlength]').forEach(textarea => {
-    const maxLength = textarea.getAttribute('maxlength');
-    const counter = document.createElement('small');
-    counter.className = 'text-muted';
-    counter.textContent = `0 / ${maxLength}`;
-    textarea.parentElement.appendChild(counter);
-    
-    textarea.addEventListener('input', () => {
-        const length = textarea.value.length;
-        counter.textContent = `${length} / ${maxLength}`;
-        if (length > maxLength * 0.9) {
-            counter.classList.add('text-danger');
-        } else {
-            counter.classList.remove('text-danger');
-        }
-    });
-});
-
-console.log('Forum JS loaded successfully!');
-
-
-// ============================================
-// ADVANCED UI ENHANCEMENTS
-// ============================================
-
-// Back to Top Button
-(function() {
-    const backToTop = document.createElement('button');
-    backToTop.className = 'back-to-top';
-    backToTop.innerHTML = '<i class="bi bi-arrow-up"></i>';
-    backToTop.setAttribute('aria-label', 'Back to top');
-    document.body.appendChild(backToTop);
-    
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 300) {
-            backToTop.classList.add('visible');
-        } else {
-            backToTop.classList.remove('visible');
-        }
-    });
-    
-    backToTop.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-})();
-
-// Count Up Animation
-function animateCountUp(element, target, duration = 1000) {
-    const start = 0;
-    const increment = target / (duration / 16);
-    let current = start;
-    
-    const timer = setInterval(() => {
-        current += increment;
-        if (current >= target) {
-            element.textContent = target.toLocaleString();
-            clearInterval(timer);
-        } else {
-            element.textContent = Math.floor(current).toLocaleString();
-        }
-    }, 16);
-}
-
-// Count-up animation is disabled to prevent display issues
-// Stats numbers will display normally without animation
-
-// Keyboard Shortcuts
-document.addEventListener('keydown', (e) => {
-    // Ctrl/Cmd + K for search focus
-    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-        e.preventDefault();
-        const searchInput = document.querySelector('input[name="q"]');
-        if (searchInput) {
-            searchInput.focus();
-            searchInput.select();
-        }
+    if (duration > 0) {
+      setTimeout(function () { Toast.close(toast); }, duration);
     }
-    
-    // Escape to close modals
-    if (e.key === 'Escape') {
-        const modal = document.querySelector('.modal.show');
-        if (modal) {
-            bootstrap.Modal.getInstance(modal)?.hide();
-        }
+
+    return toast;
+  },
+
+  close(toast) {
+    if (toast && toast.parentElement) {
+      toast.classList.add('hiding');
+      setTimeout(function () { toast.remove(); }, 300);
     }
-});
+  },
 
-// Image Error Handler
-document.querySelectorAll('img').forEach(img => {
-    img.addEventListener('error', function() {
-        if (this.classList.contains('user-avatar') || 
-            this.classList.contains('user-avatar-sm') || 
-            this.classList.contains('user-avatar-lg')) {
-            this.src = 'https://ui-avatars.com/api/?name=User&background=667eea&color=fff';
-        }
-    });
-});
-
-// Reading Progress Bar
-(function() {
-    const progressBar = document.createElement('div');
-    progressBar.className = 'reading-progress';
-    progressBar.innerHTML = '<div class="reading-progress-bar"></div>';
-    document.body.prepend(progressBar);
-    
-    // Add styles
-    const style = document.createElement('style');
-    style.textContent = `
-        .reading-progress {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: rgba(0,0,0,0.1);
-            z-index: 9999;
-        }
-        .reading-progress-bar {
-            height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            width: 0%;
-            transition: width 0.1s ease;
-        }
-    `;
-    document.head.appendChild(style);
-    
-    window.addEventListener('scroll', () => {
-        const scrollTop = window.scrollY;
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const progress = (scrollTop / docHeight) * 100;
-        progressBar.querySelector('.reading-progress-bar').style.width = `${progress}%`;
-    });
-})();
-
-// Enhanced Form Validation Feedback
-document.querySelectorAll('form').forEach(form => {
-    form.querySelectorAll('input, textarea, select').forEach(field => {
-        field.addEventListener('blur', function() {
-            if (this.checkValidity()) {
-                this.classList.remove('is-invalid');
-                this.classList.add('is-valid');
-            } else if (this.value) {
-                this.classList.remove('is-valid');
-                this.classList.add('is-invalid');
-            }
-        });
-        
-        field.addEventListener('input', function() {
-            if (this.classList.contains('is-invalid') && this.checkValidity()) {
-                this.classList.remove('is-invalid');
-                this.classList.add('is-valid');
-            }
-        });
-    });
-});
-
-// Auto-resize Textareas
-document.querySelectorAll('textarea').forEach(textarea => {
-    textarea.style.overflow = 'hidden';
-    textarea.style.resize = 'none';
-    
-    function autoResize() {
-        this.style.height = 'auto';
-        this.style.height = this.scrollHeight + 'px';
-    }
-    
-    textarea.addEventListener('input', autoResize);
-    autoResize.call(textarea);
-});
-
-// Confirmation Dialog Enhancement
-window.confirmAction = function(message, callback) {
-    const modal = document.createElement('div');
-    modal.className = 'modal fade';
-    modal.innerHTML = `
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header border-0">
-                    <h5 class="modal-title">
-                        <i class="bi bi-exclamation-triangle text-warning me-2"></i>
-                        Xác nhận
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p class="mb-0">${message}</p>
-                </div>
-                <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-danger confirm-btn">Xác nhận</button>
-                </div>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(modal);
-    
-    const bsModal = new bootstrap.Modal(modal);
-    bsModal.show();
-    
-    modal.querySelector('.confirm-btn').addEventListener('click', () => {
-        callback();
-        bsModal.hide();
-    });
-    
-    modal.addEventListener('hidden.bs.modal', () => {
-        modal.remove();
-    });
+  success(message, title) { return this.show(message, 'success', title || ''); },
+  error(message, title) { return this.show(message, 'error', title || ''); },
+  warning(message, title) { return this.show(message, 'warning', title || ''); },
+  info(message, title) { return this.show(message, 'info', title || ''); }
 };
 
-// Loading State for Buttons
-document.querySelectorAll('form').forEach(form => {
-    form.addEventListener('submit', function() {
-        const submitBtn = this.querySelector('button[type="submit"]');
-        if (submitBtn && !submitBtn.disabled) {
-            const originalText = submitBtn.innerHTML;
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Đang xử lý...';
-            
-            // Reset after 10 seconds (fallback)
-            setTimeout(() => {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalText;
-            }, 10000);
+// Confirm Modal
+const Confirm = {
+  modal: null,
+
+  show(options) {
+    options = options || {};
+    const title = options.title || 'Xác nhận';
+    const message = options.message || 'Bạn có chắc chắn muốn thực hiện?';
+    const confirmText = options.confirmText || 'Xác nhận';
+    const cancelText = options.cancelText || 'Hủy';
+    const type = options.type || 'danger';
+    const onConfirm = options.onConfirm || function () { };
+    const onCancel = options.onCancel || function () { };
+
+    const icons = {
+      danger: 'bi-exclamation-triangle-fill',
+      warning: 'bi-question-circle-fill',
+      info: 'bi-info-circle-fill'
+    };
+
+    const colors = {
+      danger: 'var(--error)',
+      warning: 'var(--warning)',
+      info: 'var(--info)'
+    };
+
+    if (this.modal) this.modal.remove();
+
+    this.modal = document.createElement('div');
+    this.modal.className = 'confirm-modal';
+    this.modal.innerHTML = '<div class="confirm-modal-content">' +
+      '<div class="confirm-modal-icon" style="background: ' + colors[type] + '15;">' +
+      '<i class="bi ' + icons[type] + '" style="color: ' + colors[type] + ';"></i>' +
+      '</div>' +
+      '<h5>' + title + '</h5>' +
+      '<p>' + message + '</p>' +
+      '<div class="confirm-modal-actions">' +
+      '<button class="btn btn-secondary" id="confirmCancel">' + cancelText + '</button>' +
+      '<button class="btn btn-' + (type === 'danger' ? 'danger' : 'primary') + '" id="confirmOk">' + confirmText + '</button>' +
+      '</div>' +
+      '</div>';
+
+    document.body.appendChild(this.modal);
+
+    var self = this;
+    requestAnimationFrame(function () { self.modal.classList.add('show'); });
+
+    this.modal.querySelector('#confirmOk').onclick = function () {
+      self.hide();
+      onConfirm();
+    };
+
+    this.modal.querySelector('#confirmCancel').onclick = function () {
+      self.hide();
+      onCancel();
+    };
+
+    this.modal.onclick = function (e) {
+      if (e.target === self.modal) {
+        self.hide();
+        onCancel();
+      }
+    };
+  },
+
+  hide() {
+    var self = this;
+    if (this.modal) {
+      this.modal.classList.remove('show');
+      setTimeout(function () {
+        if (self.modal) {
+          self.modal.remove();
+          self.modal = null;
         }
-    });
+      }, 200);
+    }
+  }
+};
+
+// Delete confirmation wrapper
+function confirmDelete(message, callback) {
+  Confirm.show({
+    title: 'Xác nhận xóa',
+    message: message || 'Bạn có chắc chắn muốn xóa? Hành động này không thể hoàn tác.',
+    confirmText: 'Xóa',
+    cancelText: 'Hủy',
+    type: 'danger',
+    onConfirm: callback || function () { return true; }
+  });
+  return false;
+}
+
+// Initialize on DOM ready
+document.addEventListener('DOMContentLoaded', function () {
+  // Auto-hide alerts after 5s
+  document.querySelectorAll('.alert:not(.alert-permanent)').forEach(function (alert) {
+    setTimeout(function () {
+      alert.style.opacity = '0';
+      alert.style.transform = 'translateY(-10px)';
+      setTimeout(function () { alert.remove(); }, 300);
+    }, 5000);
+  });
 });
 
-// Notification Sound (optional)
-function playNotificationSound() {
-    const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2teleQAA');
-    audio.volume = 0.3;
-    audio.play().catch(() => {});
-}
 
-// Dark Mode Toggle (preparation)
-function toggleDarkMode() {
-    document.body.classList.toggle('dark-mode');
-    localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-}
+// ============================================
+// SEARCH SUGGESTIONS SYSTEM
+// ============================================
+var SearchSuggestions = {
+  input: null,
+  container: null,
+  timeout: null,
+  currentQuery: '',
 
-// Check saved dark mode preference
-if (localStorage.getItem('darkMode') === 'true') {
-    document.body.classList.add('dark-mode');
-}
+  init: function () {
+    this.input = document.getElementById('searchInput');
+    this.container = document.getElementById('searchSuggestions');
 
-console.log('Advanced UI enhancements loaded!');
+    if (!this.input || !this.container) return;
+
+    var self = this;
+
+    this.input.addEventListener('input', function (e) { self.handleInput(e); });
+    this.input.addEventListener('focus', function () { self.handleFocus(); });
+    this.input.addEventListener('keydown', function (e) { self.handleKeydown(e); });
+
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('.search-container')) {
+        self.hide();
+      }
+    });
+  },
+
+  handleInput: function (e) {
+    var self = this;
+    var query = e.target.value.trim();
+
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+    }
+
+    if (query.length < 2) {
+      this.hide();
+      return;
+    }
+
+    this.timeout = setTimeout(function () {
+      self.search(query);
+    }, 300);
+  },
+
+  handleFocus: function () {
+    if (this.input.value.trim().length >= 2) {
+      this.search(this.input.value.trim());
+    }
+  },
+
+  handleKeydown: function (e) {
+    var items = this.container.querySelectorAll('.suggestion-item');
+    var current = this.container.querySelector('.suggestion-item.active');
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (current) {
+        current.classList.remove('active');
+        var next = current.nextElementSibling || items[0];
+        if (next && next.classList.contains('suggestion-item')) {
+          next.classList.add('active');
+        }
+      } else if (items.length > 0) {
+        items[0].classList.add('active');
+      }
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (current) {
+        current.classList.remove('active');
+        var prev = current.previousElementSibling || items[items.length - 1];
+        if (prev && prev.classList.contains('suggestion-item')) {
+          prev.classList.add('active');
+        }
+      } else if (items.length > 0) {
+        items[items.length - 1].classList.add('active');
+      }
+    } else if (e.key === 'Enter') {
+      if (current) {
+        e.preventDefault();
+        window.location.href = current.href;
+      }
+    } else if (e.key === 'Escape') {
+      this.hide();
+      this.input.blur();
+    }
+  },
+
+  search: function (query) {
+    if (query === this.currentQuery) return;
+    this.currentQuery = query;
+    var self = this;
+
+    this.showLoading();
+
+    var apiPath = 'api/search-suggestions.php';
+    var path = window.location.pathname;
+    if (path.indexOf('/user/') !== -1 || path.indexOf('/admin/') !== -1 || path.indexOf('/moderator/') !== -1) {
+      apiPath = '../api/search-suggestions.php';
+    }
+
+    fetch(apiPath + '?q=' + encodeURIComponent(query))
+      .then(function (response) { return response.json(); })
+      .then(function (data) {
+        if (data.suggestions && data.suggestions.length > 0) {
+          self.showSuggestions(data.suggestions);
+        } else {
+          self.showNoResults();
+        }
+      })
+      .catch(function (error) {
+        console.error('Search error:', error);
+        self.hide();
+      });
+  },
+
+  showLoading: function () {
+    this.container.innerHTML = '<div class="search-loading"><i class="bi bi-hourglass-split"></i> Đang tìm...</div>';
+    this.container.classList.add('show');
+  },
+
+  showSuggestions: function (suggestions) {
+    var self = this;
+    var html = suggestions.map(function (item) { return self.renderSuggestion(item); }).join('');
+    this.container.innerHTML = html;
+    this.container.classList.add('show');
+  },
+
+  showNoResults: function () {
+    this.container.innerHTML = '<div class="search-no-results"><i class="bi bi-search"></i> Không tìm thấy kết quả</div>';
+    this.container.classList.add('show');
+  },
+
+  renderSuggestion: function (item) {
+    var typeLabels = { question: 'Câu hỏi', tag: 'Tag', user: 'Người dùng' };
+    var avatar = '';
+    var meta = '';
+
+    if (item.type === 'user' && item.avatar) {
+      avatar = '<img src="' + item.avatar + '" alt="" class="suggestion-avatar">';
+    } else {
+      avatar = '<div class="suggestion-icon"><i class="bi ' + item.icon + '"></i></div>';
+    }
+
+    if (item.type === 'tag') {
+      meta = (item.count || 0) + ' câu hỏi';
+    } else if (item.type === 'user') {
+      meta = (item.points || 0) + ' điểm';
+    } else {
+      meta = typeLabels[item.type];
+    }
+
+    var url = item.url;
+    var path = window.location.pathname;
+    if (path.indexOf('/user/') === -1 && path.indexOf('/admin/') === -1 && path.indexOf('/moderator/') === -1) {
+      url = url.replace('../', '');
+    }
+
+    var title = this.highlightQuery(item.title);
+
+    return '<a href="' + url + '" class="suggestion-item ' + item.type + '">' +
+      avatar +
+      '<div class="suggestion-content">' +
+      '<div class="suggestion-title">' + title + '</div>' +
+      '<div class="suggestion-meta">' + meta + '</div>' +
+      '</div>' +
+      '<span class="suggestion-badge">' + typeLabels[item.type] + '</span>' +
+      '</a>';
+  },
+
+  highlightQuery: function (text) {
+    if (!this.currentQuery) return text;
+    var query = this.currentQuery.toLowerCase();
+    var lowerText = text.toLowerCase();
+    var idx = lowerText.indexOf(query);
+    if (idx === -1) return text;
+    return text.substring(0, idx) + '<mark>' + text.substring(idx, idx + query.length) + '</mark>' + text.substring(idx + query.length);
+  },
+
+  hide: function () {
+    this.container.classList.remove('show');
+    var activeItems = this.container.querySelectorAll('.suggestion-item.active');
+    activeItems.forEach(function (item) { item.classList.remove('active'); });
+  }
+};
+
+// Initialize search
+document.addEventListener('DOMContentLoaded', function () {
+  SearchSuggestions.init();
+});

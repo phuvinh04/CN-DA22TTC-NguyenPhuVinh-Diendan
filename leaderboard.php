@@ -1,6 +1,16 @@
 <?php
 $pageTitle = 'Bảng xếp hạng';
 require_once 'config/database.php';
+require_once 'config/session.php';
+require_once 'includes/badge_helper.php';
+
+// Yêu cầu đăng nhập
+$currentUser = getCurrentUser();
+if (!$currentUser) {
+    header('Location: login.php');
+    exit();
+}
+
 require_once 'includes/header.php';
 
 // Lấy top users theo điểm
@@ -241,17 +251,15 @@ $topMonth = $conn->query("
 
         <!-- Call to Action -->
         <div class="text-center mt-5">
-            <div class="card modern-card bg-gradient text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                <div class="card-body py-5">
-                    <h3 class="mb-3">Bạn cũng có thể lên bảng xếp hạng!</h3>
-                    <p class="lead mb-4">Tham gia đóng góp và kiếm điểm ngay hôm nay</p>
+            <div class="leaderboard-cta">
+                <h3 class="mb-3" style="color: #fff;">Bạn cũng có thể lên bảng xếp hạng!</h3>
+                <p class="lead mb-4" style="color: rgba(255,255,255,0.9);">Tham gia đóng góp và kiếm điểm ngay hôm nay</p>
                     <a href="points-system.php" class="btn btn-light btn-lg me-2">
                         <i class="bi bi-info-circle me-2"></i>Xem cách kiếm điểm
                     </a>
                     <a href="ask-question.php" class="btn btn-outline-light btn-lg">
                         <i class="bi bi-plus-circle me-2"></i>Đặt câu hỏi ngay
                     </a>
-                </div>
             </div>
         </div>
     </div>

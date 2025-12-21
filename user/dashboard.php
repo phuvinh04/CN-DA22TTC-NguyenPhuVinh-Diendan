@@ -2,9 +2,17 @@
 $pageTitle = 'Trang cá nhân';
 require_once '../config/database.php';
 require_once '../config/session.php';
+require_once '../includes/badge_helper.php';
 requireLogin();
 
+$currentUser = getCurrentUser();
 $userId = $currentUser['id'];
+
+// Kiểm tra và cấp huy hiệu tự động
+checkAndAwardBadges($userId);
+
+// Lấy huy hiệu của user
+$userBadges = getUserBadges($userId);
 
 // Debug - Kiểm tra user ID
 // echo "User ID: " . $userId . "<br>";
@@ -61,6 +69,13 @@ require_once '../includes/header.php';
                     <p class="text-muted mb-3">@<?php echo htmlspecialchars($currentUser['username']); ?></p>
                     <span class="user-profile-role"><?php echo ucfirst($currentUser['role']); ?></span>
                     
+                    <!-- Huy hiệu -->
+                    <?php if (!empty($userBadges)): ?>
+                    <div class="mt-3">
+                        <?php echo displayBadges($userBadges); ?>
+                    </div>
+                    <?php endif; ?>
+                    
                     <div class="user-stats">
                         <div class="user-stat-item">
                             <div class="user-stat-number"><?php echo $stats['DIEMDANHGIA']; ?></div>
@@ -77,11 +92,20 @@ require_once '../includes/header.php';
                     </div>
                     
                     <div class="mt-4">
-                        <a href="../profile.php" class="btn btn-primary w-100 mb-2">
+                        <a href="edit-profile.php" class="btn btn-primary w-100 mb-2">
                             <i class="bi bi-pencil me-2"></i>Chỉnh sửa hồ sơ
                         </a>
-                        <a href="../ask-question.php" class="btn btn-outline-primary w-100">
+                        <a href="../ask-question.php" class="btn btn-outline-primary w-100 mb-2">
                             <i class="bi bi-plus-circle me-2"></i>Đặt câu hỏi mới
+                        </a>
+                        <a href="my-questions.php" class="btn btn-outline-info w-100 mb-2">
+                            <i class="bi bi-question-circle me-2"></i>Câu hỏi của tôi
+                        </a>
+                        <a href="my-answers.php" class="btn btn-outline-success w-100 mb-2">
+                            <i class="bi bi-chat-left-text me-2"></i>Câu trả lời của tôi
+                        </a>
+                        <a href="../profile.php?id=<?php echo $currentUser['id']; ?>" class="btn btn-outline-secondary w-100">
+                            <i class="bi bi-person me-2"></i>Xem hồ sơ công khai
                         </a>
                     </div>
                 </div>
@@ -117,6 +141,23 @@ require_once '../includes/header.php';
                                 <p class="text-muted mb-0">Lượt xem</p>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Huy hiệu của tôi -->
+                <div class="card modern-card mb-4">
+                    <div class="card-header bg-transparent border-0">
+                        <h5 class="mb-0"><i class="bi bi-award text-warning me-2"></i>Huy hiệu của tôi</h5>
+                    </div>
+                    <div class="card-body">
+                        <?php if (empty($userBadges)): ?>
+                            <div class="badge-empty">
+                                <i class="bi bi-award d-block"></i>
+                                <p>Chưa có huy hiệu nào. Hãy hoạt động để nhận huy hiệu!</p>
+                            </div>
+                        <?php else: ?>
+                            <?php echo displayBadgesWithName($userBadges); ?>
+                        <?php endif; ?>
                     </div>
                 </div>
 

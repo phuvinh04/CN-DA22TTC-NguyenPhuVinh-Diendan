@@ -207,11 +207,12 @@ INSERT INTO TAG VALUES ('TAG007', 'CN005', 'Machine Learning', 'Học máy');
 INSERT INTO TAG VALUES ('TAG008', 'CN004', 'Network Security', 'Bảo mật mạng');
 
 -- Huy hiệu
-INSERT INTO HUYHIEU VALUES ('HH001', 'Người mới', 'Thành viên mới tham gia', '🌱', 'ngaythamgia', 0);
-INSERT INTO HUYHIEU VALUES ('HH002', 'Nhiệt tình', 'Đã trả lời 10 câu hỏi', '🔥', 'cautraloi', 10);
-INSERT INTO HUYHIEU VALUES ('HH003', 'Chuyên gia', 'Đã trả lời 50 câu hỏi', '⭐', 'cautraloi', 50);
-INSERT INTO HUYHIEU VALUES ('HH004', 'Người hỏi', 'Đã đặt 10 câu hỏi', '❓', 'cauhoi', 10);
-INSERT INTO HUYHIEU VALUES ('HH005', 'Được yêu thích', 'Nhận 100 vote', '❤️', 'vote', 100);
+INSERT INTO HUYHIEU VALUES ('HH001', 'Người mới', 'Tham gia cộng đồng', '🌱', 'ngaythamgia', 0);
+INSERT INTO HUYHIEU VALUES ('HH002', 'Nhiệt tình', 'Trả lời 10 câu hỏi', '🔥', 'cautraloi', 10);
+INSERT INTO HUYHIEU VALUES ('HH003', 'Chuyên gia', 'Trả lời 50 câu hỏi', '⭐', 'cautraloi', 50);
+INSERT INTO HUYHIEU VALUES ('HH004', 'Người hỏi', 'Đặt 10 câu hỏi', '❓', 'cauhoi', 10);
+INSERT INTO HUYHIEU VALUES ('HH005', 'Được yêu thích', 'Nhận 100 lượt đánh giá', '🖤', 'vote', 100);
+INSERT INTO HUYHIEU VALUES ('HH006', 'Huyền thoại', 'Đạt 1000 điểm', '🏆', 'diem', 1000);
 
 -- Người dùng mẫu (mật khẩu: 123456 = e10adc3949ba59abbe56e057f20f883e)
 INSERT INTO NGUOIDUNG (MANGUOIDUNG, TENDANGNHAP, EMAIL, MATKHAU, HOTEN, ANHDAIDIEN, TIEUSU, DIEMDANHGIA, TRANGTHAI) VALUES 
@@ -316,3 +317,29 @@ INSERT INTO LUOTXEM (MACAUHOI, MANGUOIDUNG, IP_ADDRESS) VALUES ('CH003', 'ND006'
 
 -- Hoàn tất
 SELECT '✅ Tạo database diendan_hoidap thành công!' AS Message;
+
+
+
+
+-- =============================================
+-- Table: THONGBAO (Notifications)
+-- =============================================
+CREATE TABLE IF NOT EXISTS THONGBAO (
+    MATHONGBAO VARCHAR(50) NOT NULL,
+    MANGUOIDUNG VARCHAR(100) NOT NULL,
+    LOAI VARCHAR(20) DEFAULT 'system',
+    TIEUDE VARCHAR(255) NULL,
+    NOIDUNG TEXT NULL,
+    LINK VARCHAR(500) NULL,
+    DADOC TINYINT DEFAULT 0,
+    NGAYTAO DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (MATHONGBAO),
+    FOREIGN KEY (MANGUOIDUNG) REFERENCES NGUOIDUNG(MANGUOIDUNG) ON DELETE CASCADE,
+    INDEX idx_user_unread (MANGUOIDUNG, DADOC)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dữ liệu mẫu thông báo
+INSERT INTO THONGBAO VALUES 
+('TB001', 'ND002', 'answer', 'Có câu trả lời mới', 'Nguyễn Văn A đã trả lời câu hỏi của bạn', 'question.php?id=CH001', 0, NOW()),
+('TB002', 'ND002', 'vote', 'Bạn nhận được đánh giá', 'Câu hỏi của bạn được đánh giá 5 sao', 'question.php?id=CH001', 0, NOW()),
+('TB003', 'ND003', 'system', 'Chào mừng!', 'Chào mừng bạn đến với diễn đàn', NULL, 1, NOW());

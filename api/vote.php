@@ -1,8 +1,33 @@
 <?php
 session_start();
 require_once '../config/database.php';
+require_once '../includes/badge_helper.php';
 
 header('Content-Type: application/json');
+
+// ============ NOTIFICATION API ============
+if (isset($_GET['notification'])) {
+    if (!isset($_SESSION['user_id'])) {
+        echo json_encode(['success' => false, 'message' => 'Chưa đăng nhập']);
+        exit();
+    }
+    
+    $userId = $_SESSION['user_id'];
+    $data = json_decode(file_get_contents('php://input'), true);
+    $action = $data['action'] ?? '';
+    
+    if ($action === 'markAllRead') {
+        $conn->prepare("UPDATE THONGBAO SET DADOC = 1 WHERE MANGUOIDUNG = ? AND DADOC = 0")->execute([$userId]);
+        echo json_encode(['success' => true]);
+    } elseif ($action === 'markRead' && !empty($data['id'])) {
+        $conn->prepare("UPDATE THONGBAO SET DADOC = 1 WHERE MATHONGBAO = ? AND MANGUOIDUNG = ?")->execute([$data['id'], $userId]);
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false]);
+    }
+    exit();
+}
+// ============ END NOTIFICATION API ============
 
 // Kiểm tra đăng nhập
 if (!isset($_SESSION['user_id'])) {
@@ -94,6 +119,28 @@ try {
         if ($author) {
             $conn->prepare("UPDATE NGUOIDUNG SET DIEMDANHGIA = DIEMDANHGIA + ? WHERE MANGUOIDUNG = ?")
                 ->execute([$rating, $author['MANGUOIDUNG']]);
+            
+            // Tạo thông báo cho người được vote
+            try {
+                $voterName = $_SESSION['fullname'] ?? 'Ai đó';
+                $notifId = 'TB' . time() . rand(100, 999);
+                $notifTitle = $voterName . ' đã đánh giá ' . $rating . ' sao cho ' . ($type === 'question' ? 'câu hỏi' : 'câu trả lời') . ' của bạn';
+                // Tạo link đến câu hỏi hoặc câu trả lời
+                if ($type === 'question') {
+                    $notifLink = 'question-detail.php?id=' . $id;
+                } else {
+                    // Lấy MACAUHOI từ câu trả lời
+                    $qStmt = $conn->prepare("SELECT MACAUHOI FROM TRALOI WHERE MACAUTRALOI = ?");
+                    $qStmt->execute([$id]);
+                    $questionId = $qStmt->fetchColumn();
+                    $notifLink = 'question-detail.php?id=' . $questionId . '#answer-' . $id;
+                }
+                $conn->prepare("INSERT INTO THONGBAO (MATHONGBAO, MANGUOIDUNG, LOAI, TIEUDE, LINK, DADOC, NGAYTAO) VALUES (?, ?, 'vote', ?, ?, 0, NOW())")
+                    ->execute([$notifId, $author['MANGUOIDUNG'], $notifTitle, $notifLink]);
+            } catch (PDOException $e) {}
+            
+            // Kiểm tra và cấp huy hiệu cho người được vote
+            checkAndAwardBadges($author['MANGUOIDUNG']);
         }
         
         $message = 'Đánh giá ' . $rating . ' sao thành công';

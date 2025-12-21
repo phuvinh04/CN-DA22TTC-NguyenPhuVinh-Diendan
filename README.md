@@ -182,6 +182,18 @@ Chỉnh sửa trong `assets/css/style.css`:
 - ✅ Input validation
 - ⚠️ Nên thêm CSRF tokens
 
+## ⭐ Tính năng mới (v2.0)
+
+- ✅ **Hệ thống đánh giá sao** (1-5 sao) cho câu hỏi và câu trả lời
+- ✅ **Bảng xếp hạng** với Top 3 podium và thống kê tuần/tháng
+- ✅ **Hệ thống điểm** chi tiết với huy hiệu
+- ✅ **Trang thống kê Admin** với biểu đồ
+- ✅ **Chỉnh sửa hồ sơ** với đổi mật khẩu
+- ✅ **Trang Giới thiệu** và **Liên hệ**
+- ✅ **Scroll to Top** button
+- ✅ **Toast notifications** cho feedback
+- ✅ **API endpoints** cho vote, answer, question
+
 ## 🚧 Roadmap
 
 - [ ] Nâng cấp password hashing lên bcrypt

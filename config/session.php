@@ -17,7 +17,8 @@ function getCurrentUser() {
             'username' => $_SESSION['username'],
             'fullname' => $_SESSION['fullname'],
             'avatar' => $_SESSION['avatar'] ?? 'https://ui-avatars.com/api/?name=User&background=4f46e5&color=fff',
-            'role' => $_SESSION['role'] ?? 'user'
+            'role' => $_SESSION['role'] ?? 'user',
+            'points' => $_SESSION['points'] ?? 0
         ];
     }
     return null;

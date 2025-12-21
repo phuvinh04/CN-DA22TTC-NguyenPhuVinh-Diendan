@@ -9,6 +9,11 @@ $currentUser = getCurrentUser();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $pageTitle ?? 'Admin Panel'; ?></title>
     
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
@@ -46,21 +51,33 @@ $currentUser = getCurrentUser();
                 </a>
             </li>
             <li class="admin-nav-item">
+                <a href="answers.php" class="admin-nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'answers.php' ? 'active' : ''; ?>">
+                    <i class="bi bi-chat-left-text"></i>
+                    <span>Câu trả lời</span>
+                </a>
+            </li>
+            <li class="admin-nav-item">
                 <a href="tags.php" class="admin-nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'tags.php' ? 'active' : ''; ?>">
                     <i class="bi bi-tags"></i>
                     <span>Tags</span>
                 </a>
             </li>
             <li class="admin-nav-item">
-                <a href="reports.php" class="admin-nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'reports.php' ? 'active' : ''; ?>">
-                    <i class="bi bi-flag"></i>
-                    <span>Báo cáo</span>
+                <a href="statistics.php" class="admin-nav-link <?php echo in_array(basename($_SERVER['PHP_SELF']), ['statistics.php', 'reports.php']) ? 'active' : ''; ?>">
+                    <i class="bi bi-graph-up"></i>
+                    <span>Thống kê</span>
                 </a>
             </li>
             <li class="admin-nav-item">
-                <a href="settings.php" class="admin-nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'settings.php' ? 'active' : ''; ?>">
-                    <i class="bi bi-gear"></i>
-                    <span>Cài đặt</span>
+                <a href="reports-manage.php" class="admin-nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'reports-manage.php' ? 'active' : ''; ?>">
+                    <i class="bi bi-flag"></i>
+                    <span>Quản lý báo cáo</span>
+                </a>
+            </li>
+            <li class="admin-nav-item">
+                <a href="award-all-badges.php" class="admin-nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'award-all-badges.php' ? 'active' : ''; ?>">
+                    <i class="bi bi-award"></i>
+                    <span>Cấp huy hiệu</span>
                 </a>
             </li>
             <li class="admin-nav-item mt-4">

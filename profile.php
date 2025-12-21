@@ -2,6 +2,9 @@
 $pageTitle = 'Hồ sơ';
 require_once 'config/database.php';
 require_once 'config/session.php';
+require_once 'includes/badge_helper.php';
+
+$currentUser = getCurrentUser();
 
 // Cho phép xem profile người khác hoặc của mình
 $profileId = $_GET['id'] ?? ($currentUser['id'] ?? null);
@@ -67,7 +70,9 @@ require_once 'includes/header.php';
             <div class="col-lg-4 mb-4">
                 <div class="card user-profile-card">
                     <div class="card-body text-center">
-                        <img src="<?php echo htmlspecialchars($user['ANHDAIDIEN']); ?>" alt="Avatar" class="rounded-circle mb-3" style="width: 120px; height: 120px; border: 4px solid #667eea;">
+                        <div class="mb-3">
+                            <?php echo renderAvatarWithFrame($user['ANHDAIDIEN'], $user['MANGUOIDUNG'], 'lg', true); ?>
+                        </div>
                         <h4><?php echo htmlspecialchars($user['HOTEN']); ?></h4>
                         <p class="text-muted">@<?php echo htmlspecialchars($user['TENDANGNHAP']); ?></p>
                         <p class="mb-3"><?php echo htmlspecialchars($user['TIEUSU'] ?? 'Chưa có tiểu sử'); ?></p>
