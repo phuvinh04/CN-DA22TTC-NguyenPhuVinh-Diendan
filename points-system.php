@@ -291,38 +291,41 @@ if ($currentUser) {
                         }
                         ksort($badgesByLevel);
                         
+                        // Màu xen kẽ nóng/lạnh: Lạnh - Nóng - Lạnh - Nóng - Lạnh - Nóng
                         $levelNames = [
-                            1 => ['name' => 'Cơ bản', 'color' => 'secondary', 'icon' => '🌱'],
-                            2 => ['name' => 'Thường', 'color' => 'success', 'icon' => '🌿'],
-                            3 => ['name' => 'Hiếm', 'color' => 'info', 'icon' => '💎'],
-                            4 => ['name' => 'Sử thi', 'color' => 'primary', 'icon' => '⚡'],
-                            5 => ['name' => 'Huyền thoại', 'color' => 'warning', 'icon' => '🔥'],
-                            6 => ['name' => 'Thần thoại', 'color' => 'danger', 'icon' => '👑'],
+                            1 => ['name' => 'Cơ bản', 'color' => '#22c55e', 'icon' => '🌱'],      // Xanh lá (lạnh)
+                            2 => ['name' => 'Thường', 'color' => '#f97316', 'icon' => '🌿'],      // Cam (nóng)
+                            3 => ['name' => 'Hiếm', 'color' => '#3b82f6', 'icon' => '💎'],        // Xanh dương (lạnh)
+                            4 => ['name' => 'Sử thi', 'color' => '#ef4444', 'icon' => '⚡'],      // Đỏ (nóng)
+                            5 => ['name' => 'Huyền thoại', 'color' => '#8b5cf6', 'icon' => '🔥'], // Tím (lạnh)
+                            6 => ['name' => 'Thần thoại', 'color' => '#eab308', 'icon' => '👑'],  // Vàng (nóng)
                         ];
                         ?>
                         
                         <?php foreach ($badgesByLevel as $level => $levelBadges): ?>
-                        <?php $levelInfo = $levelNames[$level] ?? ['name' => 'Cấp ' . $level, 'color' => 'secondary', 'icon' => '⭐']; ?>
+                        <?php $levelInfo = $levelNames[$level] ?? ['name' => 'Cấp ' . $level, 'color' => '#6b7280', 'icon' => '⭐']; ?>
                         <div class="mb-4">
                             <h6 class="d-flex align-items-center gap-2 mb-3">
                                 <span><?php echo $levelInfo['icon']; ?></span>
-                                <span class="badge bg-<?php echo $levelInfo['color']; ?>"><?php echo $levelInfo['name']; ?></span>
+                                <span class="badge" style="background: <?php echo $levelInfo['color']; ?>; color: #fff;"><?php echo $levelInfo['name']; ?></span>
                                 <small class="text-muted">(<?php echo count($levelBadges); ?> huy hiệu)</small>
                             </h6>
                             <div class="row g-3">
-                                <?php foreach ($levelBadges as $badge): 
-                                    $frameColor = $badge['MAUKHUNG'] ?? '#cbd5e1';
+                                <?php 
+                                // Màu xanh dương thống nhất cho tất cả badge cards
+                                $badgeColor = '#3b82f6';
+                                foreach ($levelBadges as $badge): 
                                     $userHas = $currentUser && userHasBadge($currentUser['id'], $badge['MAHUYHIEU']);
                                 ?>
                                 <div class="col-md-6 col-lg-4">
-                                    <div class="card h-100 badge-card <?php echo $userHas ? 'badge-owned' : 'badge-locked'; ?>" style="border-color: <?php echo $frameColor; ?>;">
+                                    <div class="card h-100 badge-card <?php echo $userHas ? 'badge-owned' : 'badge-locked'; ?>" style="border-color: <?php echo $badgeColor; ?>;">
                                         <div class="card-body text-center py-3">
-                                            <div class="badge-icon-large mb-2" style="<?php echo $userHas ? '' : 'filter: grayscale(100%); opacity: 0.5;'; ?>">
+                                            <div class="badge-icon-large mb-2">
                                                 <?php echo $badge['BIEUTUONG']; ?>
                                             </div>
                                             <h6 class="mb-1"><?php echo htmlspecialchars($badge['TENHUYHIEU']); ?></h6>
                                             <p class="text-muted small mb-2"><?php echo htmlspecialchars($badge['MOTA']); ?></p>
-                                            <span class="badge" style="background: <?php echo $frameColor; ?>; color: #fff;">
+                                            <span class="badge" style="background: #f97316; color: #000;">
                                                 <?php 
                                                 $criteria = $badge['LOAITIEUCHI'];
                                                 $threshold = $badge['NGUONGTIEUCHI'];
@@ -332,7 +335,7 @@ if ($currentUser) {
                                                     case 'cauhoi': echo $threshold . ' câu hỏi'; break;
                                                     case 'vote': echo $threshold . ' đánh giá tốt (4-5⭐)'; break;
                                                     case 'diem': echo $threshold . ' điểm'; break;
-                                                    case 'streak': echo $threshold . ' ngày streak'; break;
+                                                    case 'streak': echo $threshold . ' ngày liên tiếp'; break;
                                                     case 'accepted': echo $threshold . ' được chấp nhận'; break;
                                                     default: echo $criteria;
                                                 }
@@ -340,7 +343,7 @@ if ($currentUser) {
                                             </span>
                                             <?php if ($userHas): ?>
                                             <div class="mt-2">
-                                                <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Đã sở hữu</span>
+                                                <span class="badge" style="background: #22c55e; color: #fff;"><i class="bi bi-check-circle me-1"></i>Đã sở hữu</span>
                                             </div>
                                             <?php endif; ?>
                                         </div>

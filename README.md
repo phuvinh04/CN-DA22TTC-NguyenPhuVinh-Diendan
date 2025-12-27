@@ -1,53 +1,82 @@
-# 🎓 Diễn Đàn Chuyên Ngành - Forum Q&A System
+# 🎓 Diễn Đàn Hỏi Đáp Chuyên Ngành
 
-Hệ thống diễn đàn hỏi đáp chuyên nghiệp với giao diện UX/UI hiện đại, được xây dựng bằng PHP, MySQL và Bootstrap 5.
+Hệ thống diễn đàn hỏi đáp chuyên nghiệp với tính năng Đánh giá sao và Vinh danh tự động, được xây dựng bằng PHP, Microsoft SQL Server và Bootstrap 5.
 
 ## ✨ Tính năng chính
 
 ### 🔐 Hệ thống xác thực
-- ✅ Đăng ký tài khoản với validation đầy đủ
-- ✅ Đăng nhập với remember me
-- ✅ Phân quyền: Admin, Moderator, User
-- ✅ Quản lý session an toàn
+- Đăng ký tài khoản với validation đầy đủ
+- Đăng nhập thường và đăng nhập Google OAuth 2.0
+- Phân quyền 3 cấp: Admin, Moderator, User
+- Quản lý session an toàn
+
+### � Chứnc năng diễn đàn
+- Đặt câu hỏi với hỗ trợ code block và upload ảnh
+- Trả lời câu hỏi
+- Đánh giá sao (1-5 sao) cho câu hỏi và câu trả lời
+- Chấp nhận câu trả lời hay nhất
+- Tags phân loại theo chuyên ngành
+- Tìm kiếm và lọc câu hỏi
+- Báo cáo vi phạm
+
+### 🏆 Hệ thống Vinh danh (Gamification)
+- Điểm uy tín tự động cộng/trừ theo hoạt động
+- 20 huy hiệu với điều kiện đạt được khác nhau
+- Bảng xếp hạng Top thành viên
+- Chuỗi đăng nhập liên tiếp
 
 ### 👥 Trang người dùng
-- ✅ Dashboard cá nhân với thống kê
-- ✅ Quản lý câu hỏi của tôi
-- ✅ Quản lý câu trả lời
-- ✅ Chỉnh sửa profile
-- ✅ Hệ thống điểm và huy hiệu
+- Hồ sơ cá nhân với avatar và tiểu sử
+- Quản lý câu hỏi của tôi
+- Quản lý câu trả lời của tôi
+- Lịch sử điểm chi tiết
+- Thông báo hệ thống
+- Chỉnh sửa hồ sơ và đổi mật khẩu
 
-### 🛡️ Trang Admin
-- ✅ Dashboard với thống kê tổng quan
-- ✅ Quản lý người dùng (CRUD)
-- ✅ Quản lý câu hỏi
-- ✅ Quản lý tags và chuyên ngành
-- ✅ Báo cáo và thống kê
-- ✅ Sidebar navigation chuyên nghiệp
+### �️ Tứrang Admin
+- Dashboard thống kê tổng quan
+- Quản lý người dùng (khóa/mở khóa)
+- Duyệt câu hỏi và câu trả lời
+- Quản lý tags và chuyên ngành
+- Xử lý báo cáo vi phạm
+- Cấp huy hiệu hàng loạt
+- Thống kê biểu đồ
 
 ### 🎨 Giao diện UX/UI
-- ✅ Design hiện đại với gradient và animations
-- ✅ Responsive hoàn toàn (Mobile, Tablet, Desktop)
-- ✅ Smooth transitions và hover effects
-- ✅ Loading states và feedback
-- ✅ Toast notifications
-- ✅ Modal dialogs
+- Design hiện đại với gradient và animations
+- Responsive hoàn toàn (Mobile, Tablet, Desktop)
+- Smooth transitions và hover effects
+- Toast notifications
 
-### 💬 Chức năng diễn đàn
-- ✅ Đặt câu hỏi với editor
-- ✅ Trả lời câu hỏi
-- ✅ Vote up/down
-- ✅ Comment và thảo luận
-- ✅ Tags và categories
-- ✅ Tìm kiếm nâng cao
-- ✅ Lượt xem và thống kê
+## 🎨 Bảng màu giao diện
+
+### Màu chủ đạo
+- **Primary (Xanh dương)**: `#3b82f6` - Dùng cho navbar, header, các thành phần chính
+- **Accent (Cam)**: `#f97316` - Dùng cho nút CTA, highlights, điểm nhấn
+
+### Gradient
+- **Gradient Primary**: `linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)` - Navbar, hero section
+- **Gradient Warm**: `linear-gradient(135deg, #f97316 0%, #ea580c 100%)` - Nút chính, CTA
+- **Gradient Success**: `linear-gradient(135deg, #22c55e 0%, #16a34a 100%)` - Trạng thái thành công
+- **Gradient Sunset**: `linear-gradient(135deg, #f97316 0%, #fbbf24 100%)` - Warning, hạng nhất
+
+### Màu ngữ nghĩa
+- **Success (Xanh lá)**: `#16a34a` - Thành công, câu trả lời được chấp nhận
+- **Warning (Vàng)**: `#f59e0b` - Cảnh báo, đánh giá sao
+- **Error (Đỏ)**: `#dc2626` - Lỗi, xóa
+- **Info (Xanh nhạt)**: `#0284c7` - Thông tin
+
+### Màu nền
+- **Background**: `#fafaf9` với gradient overlay nhẹ
+- **Card**: `#ffffff` với border `#e7e5e4`
+- **Gray scale**: Từ `#fafaf9` đến `#1c1917`
 
 ## 🚀 Cài đặt
 
 ### Yêu cầu hệ thống
 - PHP 7.4 trở lên
-- MySQL 5.7 trở lên / MariaDB
-- XAMPP / WAMP / LAMP
+- Microsoft SQL Server 2019 trở lên
+- XAMPP với SQL Server driver
 - Web browser hiện đại
 
 ### Các bước cài đặt
@@ -59,23 +88,26 @@ Hệ thống diễn đàn hỏi đáp chuyên nghiệp với giao diện UX/UI h
    ```
 
 2. **Import database**
-   - Mở phpMyAdmin: `http://localhost/phpmyadmin`
-   - Tạo database mới tên `diendan_hoidap`
-   - Import file `database_mysql.sql`
+   - Mở SQL Server Management Studio
+   - Tạo database mới tên `ForumDB`
+   - Import file `database_sqlserver.sql`
 
 3. **Cấu hình database**
    - Mở file `config/database.php`
-   - Chỉnh sửa thông tin kết nối nếu cần:
+   - Chỉnh sửa thông tin kết nối:
    ```php
    define('DB_SERVER', 'localhost');
-   define('DB_PORT', '3306');
-   define('DB_USERNAME', 'root');
-   define('DB_PASSWORD', '');
-   define('DB_NAME', 'diendan_hoidap');
+   define('DB_NAME', 'ForumDB');
+   define('DB_USERNAME', 'sa');
+   define('DB_PASSWORD', 'your_password');
    ```
 
-4. **Chạy ứng dụng**
-   - Start Apache và MySQL trong XAMPP
+4. **Cấu hình Google OAuth (tùy chọn)**
+   - Mở file `config/google_config.php`
+   - Nhập Client ID và Client Secret từ Google Console
+
+5. **Chạy ứng dụng**
+   - Start Apache trong XAMPP
    - Truy cập: `http://localhost/diendan_hoidap`
 
 ## 👤 Tài khoản demo
@@ -83,169 +115,84 @@ Hệ thống diễn đàn hỏi đáp chuyên nghiệp với giao diện UX/UI h
 ### Admin
 - Username: `admin`
 - Password: `123456`
-- Quyền: Quản trị viên toàn quyền
-- Truy cập: `http://localhost/diendan_hoidap/admin/dashboard.php`
+- Truy cập: `/admin/dashboard.php`
 
 ### User
 - Username: `nguyenvana`
-- Password: `123456`
-- Quyền: Người dùng thông thường
-- Truy cập: `http://localhost/diendan_hoidap/user/dashboard.php`
+- Password: `123654`
 
 ## 📁 Cấu trúc thư mục
 
 ```
 diendan_hoidap/
 ├── admin/                  # Trang quản trị
-│   ├── dashboard.php      # Dashboard admin
-│   ├── users.php          # Quản lý users
-│   ├── questions.php      # Quản lý câu hỏi
-│   └── tags.php           # Quản lý tags
+│   ├── dashboard.php
+│   ├── users.php
+│   ├── questions.php
+│   ├── answers.php
+│   ├── tags.php
+│   ├── reports.php
+│   ├── statistics.php
+│   └── award-all-badges.php
 ├── user/                   # Trang người dùng
-│   └── dashboard.php      # Dashboard user
+│   ├── my-questions.php
+│   ├── my-answers.php
+│   ├── my-points.php
+│   ├── notifications.php
+│   └── edit-profile.php
+├── api/                    # API endpoints
+│   ├── rate.php
+│   ├── accept-answer.php
+│   └── user.php
 ├── assets/
-│   ├── css/
-│   │   └── style.css      # CSS chính với animations
-│   └── js/
-│       └── main.js        # JavaScript chính
+│   ├── css/style.css
+│   └── js/main.js
 ├── config/
-│   ├── database.php       # Cấu hình database
-│   └── session.php        # Quản lý session
+│   ├── database.php
+│   └── google_config.php
 ├── includes/
-│   ├── header.php         # Header chung
-│   ├── footer.php         # Footer chung
-│   ├── admin_header.php   # Header admin
-│   └── admin_footer.php   # Footer admin
-├── index.php              # Trang chủ
-├── login.php              # Đăng nhập
-├── register.php           # Đăng ký
-├── profile.php            # Trang profile
-├── questions.php          # Danh sách câu hỏi
-├── question-detail.php    # Chi tiết câu hỏi
-├── ask-question.php       # Đặt câu hỏi
-└── database_mysql.sql     # Database schema
+│   ├── header.php
+│   ├── footer.php
+│   ├── badge_helper.php
+│   └── notification_helper.php
+├── docs/                   # Tài liệu
+├── index.php
+├── login.php
+├── register.php
+├── questions.php
+├── question-detail.php
+├── ask-question.php
+├── profile.php
+├── leaderboard.php
+├── tags.php
+├── search.php
+├── users.php
+├── points-system.php
+└── database_sqlserver.sql
 ```
 
-## 🎨 Tính năng giao diện
+## 🔧 Công nghệ sử dụng
 
-### Màu sắc chủ đạo
-- **Primary**: `#667eea` → `#764ba2` (Gradient tím)
-- **Success**: `#11998e` → `#38ef7d` (Gradient xanh lá)
-- **Info**: `#4facfe` → `#00f2fe` (Gradient xanh dương)
-- **Warning**: `#f093fb` → `#f5576c` (Gradient hồng)
-
-### Animations
-- Fade in / Slide up
-- Hover effects
-- Smooth transitions
-- Loading spinners
-- Pulse effects
-
-### Components
-- Modern cards với shadow
-- Gradient buttons
-- Floating labels
-- Badge và tags
-- Data tables
-- Modal dialogs
-- Toast notifications
-
-## 🔧 Tùy chỉnh
-
-### Thay đổi màu sắc
-Chỉnh sửa trong `assets/css/style.css`:
-```css
-:root {
-    --primary-color: #0d6efd;
-    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-```
-
-### Thêm tính năng mới
-1. Tạo file PHP mới trong thư mục tương ứng
-2. Include header/footer phù hợp
-3. Sử dụng các class CSS có sẵn
-4. Thêm JavaScript nếu cần trong `main.js`
-
-## 📱 Responsive Design
-
-- **Mobile** (< 768px): Sidebar collapse, stack layout
-- **Tablet** (768px - 992px): 2 columns layout
-- **Desktop** (> 992px): Full layout với sidebar
-
-## 🔒 Bảo mật
-
-- ✅ Prepared statements (PDO) chống SQL Injection
-- ✅ Password hashing với MD5 (nên nâng cấp lên bcrypt)
-- ✅ Session management
-- ✅ XSS protection với htmlspecialchars()
-- ✅ Input validation
-- ⚠️ Nên thêm CSRF tokens
-
-## ⭐ Tính năng mới (v2.0)
-
-- ✅ **Hệ thống đánh giá sao** (1-5 sao) cho câu hỏi và câu trả lời
-- ✅ **Bảng xếp hạng** với Top 3 podium và thống kê tuần/tháng
-- ✅ **Hệ thống điểm** chi tiết với huy hiệu
-- ✅ **Trang thống kê Admin** với biểu đồ
-- ✅ **Chỉnh sửa hồ sơ** với đổi mật khẩu
-- ✅ **Trang Giới thiệu** và **Liên hệ**
-- ✅ **Scroll to Top** button
-- ✅ **Toast notifications** cho feedback
-- ✅ **API endpoints** cho vote, answer, question
-
-## 🚧 Roadmap
-
-- [ ] Nâng cấp password hashing lên bcrypt
-- [ ] Thêm CSRF tokens
-- [ ] Rich text editor (TinyMCE/CKEditor)
-- [ ] Upload ảnh
-- [ ] Notification system
-- [ ] Email verification
-- [ ] Social login
-- [ ] API RESTful
-- [ ] Real-time chat
-- [ ] Dark mode toggle
-
-## 🛠️ Công nghệ sử dụng
-
-- **Backend**: PHP 7.4+ với PDO
-- **Database**: MySQL 5.7+ / MariaDB
+- **Backend**: PHP 7.4+ với PDO (SQL Server driver)
+- **Database**: Microsoft SQL Server 2019
 - **Frontend**: Bootstrap 5.3, HTML5, CSS3
 - **JavaScript**: Vanilla JS (ES6+)
 - **Icons**: Bootstrap Icons 1.11
+- **Authentication**: Google OAuth 2.0
 - **Fonts**: Inter, Segoe UI
+
+## 🔒 Bảo mật
+
+- Prepared statements (PDO) chống SQL Injection
+- Password hashing với MD5
+- Session management
+- XSS protection với htmlspecialchars()
+- Input validation
 
 ## 📄 License
 
-MIT License - Tự do sử dụng cho mục đích học tập và thương mại
-
-## 👨‍💻 Hỗ trợ
-
-Nếu gặp vấn đề, vui lòng:
-1. Kiểm tra database đã import đúng chưa
-2. Kiểm tra Apache và MySQL đã start chưa
-3. Kiểm tra cấu hình trong `config/database.php`
-4. Xem log lỗi trong XAMPP
-
-## 📸 Screenshots
-
-### Trang đăng nhập
-- Giao diện gradient hiện đại
-- Form validation
-- Remember me functionality
-
-### Admin Dashboard
-- Thống kê tổng quan với cards gradient
-- Sidebar navigation chuyên nghiệp
-- Quản lý users, questions, tags
-
-### User Dashboard
-- Profile card với avatar
-- Thống kê cá nhân
-- Danh sách câu hỏi và trả lời
+MIT License - Tự do sử dụng cho mục đích học tập
 
 ---
 
-**Phát triển bởi:** Nguyễn Phú Vinh  
-
+**Phát triển bởi:** Nguyễn Phú Vinh
