@@ -202,14 +202,14 @@ if (strpos($currentPath, '/user/') !== false || strpos($currentPath, '/admin/') 
                                 <li><a class="dropdown-item" href="<?php echo $basePath; ?>admin/answers.php"><i class="bi bi-chat-left-text me-2"></i>Duyệt câu trả lời</a></li>
                                 <li><a class="dropdown-item" href="<?php echo $basePath; ?>admin/users.php"><i class="bi bi-people me-2"></i>Người dùng</a></li>
                             <?php elseif ($currentUser['role'] === 'moderator'): ?>
-                                <li><a class="dropdown-item" href="<?php echo $basePath; ?>user/dashboard.php"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                                <li><a class="dropdown-item" href="<?php echo $basePath; ?>user/dashboard.php"><i class="bi bi-speedometer2 me-2"></i>Tổng quan</a></li>
                                 <li><a class="dropdown-item" href="<?php echo $basePath; ?>moderator/index.php"><i class="bi bi-shield-check me-2"></i>Quản lý nội dung</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="<?php echo $basePath; ?>user/my-questions.php"><i class="bi bi-chat-left-text me-2"></i>Câu hỏi của tôi</a></li>
                                 <li><a class="dropdown-item" href="<?php echo $basePath; ?>user/my-answers.php"><i class="bi bi-chat-right-text me-2"></i>Trả lời của tôi</a></li>
                                 <li><a class="dropdown-item" href="<?php echo $basePath; ?>user/my-points.php"><i class="bi bi-trophy me-2"></i>Điểm của tôi</a></li>
                             <?php else: ?>
-                                <li><a class="dropdown-item" href="<?php echo $basePath; ?>user/dashboard.php"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                                <li><a class="dropdown-item" href="<?php echo $basePath; ?>user/dashboard.php"><i class="bi bi-speedometer2 me-2"></i>Tổng quan</a></li>
                                 <li><a class="dropdown-item" href="<?php echo $basePath; ?>user/my-questions.php"><i class="bi bi-chat-left-text me-2"></i>Câu hỏi của tôi</a></li>
                                 <li><a class="dropdown-item" href="<?php echo $basePath; ?>user/my-answers.php"><i class="bi bi-chat-right-text me-2"></i>Trả lời của tôi</a></li>
                                 <li><a class="dropdown-item" href="<?php echo $basePath; ?>user/my-points.php"><i class="bi bi-trophy me-2"></i>Điểm của tôi</a></li>

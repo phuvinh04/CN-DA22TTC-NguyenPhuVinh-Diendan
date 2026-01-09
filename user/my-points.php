@@ -57,6 +57,14 @@ $rank = $stmt->fetchColumn();
 $streak = $user['LOGIN_STREAK'] ?? 0;
 $lastLogin = $user['LAST_LOGIN_DATE'] ?? null;
 
+// Kiểm tra streak có còn hiệu lực không
+$today = date('Y-m-d');
+$yesterday = date('Y-m-d', strtotime('-1 day'));
+$streakValid = ($lastLogin === $today || $lastLogin === $yesterday);
+if (!$streakValid && $lastLogin !== null) {
+    $streak = 0; // Streak đã bị reset vì không điểm danh liên tiếp
+}
+
 require_once '../includes/header.php';
 ?>
 

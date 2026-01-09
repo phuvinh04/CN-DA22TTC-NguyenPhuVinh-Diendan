@@ -102,6 +102,40 @@
             }
         });
 
+        // === NOTIFICATION FUNCTIONS ===
+        async function markAllRead(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            try {
+                const response = await fetch(basePath + 'api/notification.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'markAllRead' })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Xóa badge số thông báo
+                    const badge = document.querySelector('.notification-badge');
+                    if (badge) badge.remove();
+                    
+                    // Xóa class unread và dot của tất cả thông báo
+                    document.querySelectorAll('.notification-item.unread').forEach(item => {
+                        item.classList.remove('unread');
+                    });
+                    document.querySelectorAll('.unread-dot').forEach(dot => {
+                        dot.remove();
+                    });
+                    
+                    // Ẩn link "Đánh dấu đã đọc"
+                    event.target.style.display = 'none';
+                }
+            } catch (e) {
+                console.error('Error marking all read:', e);
+            }
+        }
+
         // === DAILY CHECK-IN FUNCTIONS ===
         const basePath = '<?php echo isset($basePath) ? $basePath : ''; ?>';
         let checkinModal = null;

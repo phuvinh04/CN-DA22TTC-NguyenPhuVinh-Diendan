@@ -40,9 +40,19 @@ try {
     
     $conn->beginTransaction();
     
-    // Xóa vote của câu trả lời
-    $conn->prepare("DELETE v FROM VOTE v JOIN BINHCHONCAUTRALOI bc ON v.MAVOTE = bc.MAVOTE WHERE bc.MACAUTRALOI = ?")->execute([$answerId]);
+    // Lấy danh sách MAVOTE liên quan đến câu trả lời này
+    $stmtVotes = $conn->prepare("SELECT MAVOTE FROM BINHCHONCAUTRALOI WHERE MACAUTRALOI = ?");
+    $stmtVotes->execute([$answerId]);
+    $voteIds = $stmtVotes->fetchAll(PDO::FETCH_COLUMN);
+    
+    // Xóa từ bảng BINHCHONCAUTRALOI trước
     $conn->prepare("DELETE FROM BINHCHONCAUTRALOI WHERE MACAUTRALOI = ?")->execute([$answerId]);
+    
+    // Xóa các vote tương ứng từ bảng VOTE
+    if (!empty($voteIds)) {
+        $placeholders = implode(',', array_fill(0, count($voteIds), '?'));
+        $conn->prepare("DELETE FROM VOTE WHERE MAVOTE IN ($placeholders)")->execute($voteIds);
+    }
     
     // Xóa câu trả lời
     $conn->prepare("DELETE FROM TRALOI WHERE MACAUTRALOI = ?")->execute([$answerId]);
