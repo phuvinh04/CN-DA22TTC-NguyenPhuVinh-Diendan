@@ -10,7 +10,7 @@ Hệ thống diễn đàn hỏi đáp chuyên nghiệp với tính năng Đánh 
 - Phân quyền 3 cấp: Admin, Moderator, User
 - Quản lý session an toàn
 
-### � Chứnc năng diễn đàn
+### 💬 Chức năng diễn đàn
 - Đặt câu hỏi với hỗ trợ code block và upload ảnh
 - Trả lời câu hỏi
 - Đánh giá sao (1-5 sao) cho câu hỏi và câu trả lời
@@ -33,7 +33,7 @@ Hệ thống diễn đàn hỏi đáp chuyên nghiệp với tính năng Đánh 
 - Thông báo hệ thống
 - Chỉnh sửa hồ sơ và đổi mật khẩu
 
-### �️ Tứrang Admin
+### 🛠️ Trang Admin
 - Dashboard thống kê tổng quan
 - Quản lý người dùng (khóa/mở khóa)
 - Duyệt câu hỏi và câu trả lời
