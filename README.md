@@ -1,6 +1,6 @@
 # 🎓 Diễn Đàn Hỏi Đáp Chuyên Ngành
 
-Hệ thống diễn đàn hỏi đáp chuyên nghiệp với tính năng Đánh giá sao và Vinh danh tự động, được xây dựng bằng PHP, Microsoft SQL Server và Bootstrap 5.
+Hệ thống diễn đàn hỏi đáp chuyên nghiệp với tính năng Đánh giá sao và Vinh danh tự động, được xây dựng bằng PHP, MySQL và Bootstrap 5.
 
 ## ✨ Tính năng chính
 
@@ -75,8 +75,8 @@ Hệ thống diễn đàn hỏi đáp chuyên nghiệp với tính năng Đánh 
 
 ### Yêu cầu hệ thống
 - PHP 7.4 trở lên
-- Microsoft SQL Server 2019 trở lên
-- XAMPP với SQL Server driver
+- MySQL 5.7 trở lên
+- XAMPP (Apache + MySQL + PHP)
 - Web browser hiện đại
 
 ### Các bước cài đặt
@@ -88,9 +88,9 @@ Hệ thống diễn đàn hỏi đáp chuyên nghiệp với tính năng Đánh 
    ```
 
 2. **Import database**
-   - Mở SQL Server Management Studio
+   - Mở phpMyAdmin hoặc MySQL Workbench
    - Tạo database mới tên `ForumDB`
-   - Import file `database_sqlserver.sql`
+   - Import file `database.sql`
 
 3. **Cấu hình database**
    - Mở file `config/database.php`
@@ -107,7 +107,7 @@ Hệ thống diễn đàn hỏi đáp chuyên nghiệp với tính năng Đánh 
    - Nhập Client ID và Client Secret từ Google Console
 
 5. **Chạy ứng dụng**
-   - Start Apache trong XAMPP
+   - Start Apache và MySQL trong XAMPP
    - Truy cập: `http://localhost/diendan_hoidap`
 
 ## 👤 Tài khoản demo
@@ -168,13 +168,13 @@ diendan_hoidap/
 ├── search.php
 ├── users.php
 ├── points-system.php
-└── database_sqlserver.sql
+└── database.sql
 ```
 
 ## 🔧 Công nghệ sử dụng
 
-- **Backend**: PHP 7.4+ với PDO (SQL Server driver)
-- **Database**: Microsoft SQL Server 2019
+- **Backend**: PHP 7.4+ với PDO (MySQL driver)
+- **Database**: MySQL 5.7+
 - **Frontend**: Bootstrap 5.3, HTML5, CSS3
 - **JavaScript**: Vanilla JS (ES6+)
 - **Icons**: Bootstrap Icons 1.11

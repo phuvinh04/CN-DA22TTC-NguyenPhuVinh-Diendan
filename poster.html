@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poster - Diễn Đàn Hỏi Đáp Chuyên Ngành</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #666;
+            padding: 20px;
+        }
+
+        .export-btn {
+            display: block;
+            width: 200px;
+            margin: 0 auto 20px;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #43a047, #2e7d32);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .export-btn:hover {
+            background: linear-gradient(135deg, #2e7d32, #1b5e20);
+        }
+
+        /* A4 Portrait */
+        .poster {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            background: #f8f9fa;
+            border: 3px solid #1565c0;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            padding: 12px;
+        }
+
+        /* HEADER */
+        .header {
+            background: #fff;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 4px solid #1565c0;
+            border-bottom: 4px solid #1565c0;
+            margin-bottom: 10px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .university-info h1 {
+            color: #1565c0;
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .university-info h2 {
+            color: #1565c0;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .university-info p {
+            color: #666;
+            font-size: 7px;
+            font-style: italic;
+        }
+
+        .header-right {
+            text-align: right;
+        }
+
+        .header-right h3 {
+            color: #1565c0;
+            font-size: 9px;
+            font-weight: 700;
+        }
+
+        .header-right h4 {
+            color: #c62828;
+            font-size: 11px;
+            font-weight: 800;
+            font-style: italic;
+        }
+
+        /* TITLE */
+        .title-section {
+            background: linear-gradient(135deg, #1565c0, #0d47a1);
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .title-left h1 {
+            color: #fff;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .title-left h2 {
+            color: #ffc107;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .title-left .info {
+            color: #fff;
+            font-size: 9px;
+            margin-top: 5px;
+        }
+
+        .title-left .info span {
+            color: #ffc107;
+            font-weight: 700;
+        }
+
+        .title-logo {
+            background: #fff;
+            padding: 6px 12px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .title-logo .icon {
+            font-size: 20px;
+        }
+
+        .title-logo .name {
+            color: #1565c0;
+            font-size: 9px;
+            font-weight: 800;
+        }
+    </style>
+</head>
+
+<body>
+    <button class="export-btn" onclick="exportToImage()">📷 Xuất ra ảnh PNG</button>
+    <div class="poster" id="poster">
+        <div class="header">
+            <div class="header-left">
+                <div class="logo"><img src="YOUR_LOGO_TVU_URL" alt="Logo TVU"></div>
+                <div class="university-info">
+                    <h1>Trường Đại Học Trà Vinh</h1>
+                    <h2>Trường Kỹ Thuật Và Công Nghệ</h2>
+                    <p>College of Engineering and Technology</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <h3>BỘ MÔN CÔNG NGHỆ THÔNG TIN</h3>
+                <h4>ĐỒ ÁN CHUYÊN NGÀNH KHÓA 2024</h4>
+            </div>
+        </div>
+
+        <div class="title-section">
+            <div class="title-left">
+                <h1>Xây dựng website hỏi đáp chuyên ngành</h1>
+                <h2>với tính năng đánh giá và vinh danh</h2>
+                <div class="info">
+                    <strong>GVHD:</strong> <span>Th.s Phan Thị Phương Nam</span> &nbsp;&nbsp;
+                    <strong>SVTH:</strong> <span>Nguyễn Phú Vinh</span>
+                </div>
+            </div>
+            <div class="title-logo">
+                <div class="icon">💬</div>
+                <div class="name">FORUM Q&A</div>
+            </div>
+        </div>
+
+        <style>
+            /* CONTENT GRID */
+            .content-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+                margin-bottom: 10px;
+            }
+
+            .section-box {
+                background: #fff;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                padding: 10px;
+            }
+
+            .section-title {
+                color: #1565c0;
+                font-size: 11px;
+                font-weight: 800;
+                font-style: italic;
+                margin-bottom: 6px;
+                padding-bottom: 4px;
+                border-bottom: 2px solid #1565c0;
+            }
+
+            /* MỤC TIÊU - Bullet points với keywords */
+            .objective-list {
+                list-style: none;
+            }
+
+            .objective-list li {
+                font-size: 8px;
+                color: #333;
+                padding: 2px 0 2px 10px;
+                position: relative;
+                line-height: 1.5;
+            }
+
+            .objective-list li::before {
+                content: "✓";
+                color: #43a047;
+                font-weight: bold;
+                position: absolute;
+                left: 0;
+            }
+
+            .objective-list li strong {
+                color: #1565c0;
+            }
+
+            /* TÍNH NĂNG */
+            .feature-list {
+                list-style: none;
+            }
+
+            .feature-list li {
+                font-size: 8px;
+                color: #333;
+                padding: 2px 0 2px 10px;
+                position: relative;
+                line-height: 1.4;
+            }
+
+            .feature-list li::before {
+                content: "•";
+                color: #1565c0;
+                font-weight: bold;
+                position: absolute;
+                left: 0;
+            }
+
+            /* DATABASE - Simplified */
+            .db-section {
+                background: #fff;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                padding: 10px;
+                margin-bottom: 10px;
+                position: relative;
+            }
+
+            .db-content {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .db-stats {
+                flex-shrink: 0;
+                text-align: center;
+                padding: 10px;
+                background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+                border-radius: 8px;
+                min-width: 100px;
+            }
+
+            .db-stats .big-number {
+                font-size: 36px;
+                font-weight: 900;
+                color: #1565c0;
+                line-height: 1;
+            }
+
+            .db-stats .label {
+                font-size: 9px;
+                color: #333;
+                font-weight: 600;
+            }
+
+            .db-tables {
+                flex: 1;
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 5px;
+            }
+
+            .db-table-item {
+                background: #f5f5f5;
+                border: 1px solid #ddd;
+                border-radius: 3px;
+                padding: 4px;
+                text-align: center;
+                font-size: 7px;
+                font-weight: 600;
+                color: #333;
+            }
+
+            .db-table-item.highlight {
+                background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+                border-color: #ffb74d;
+                color: #e65100;
+            }
+
+            /* PROCESS */
+            .process-section {
+                background: #fff;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                padding: 10px;
+                margin-bottom: 10px;
+            }
+
+            .process-title {
+                color: #1565c0;
+                font-size: 11px;
+                font-weight: 800;
+                font-style: italic;
+                margin-bottom: 8px;
+            }
+
+            .process-steps {
+                display: flex;
+                justify-content: space-between;
+                position: relative;
+            }
+
+            .process-steps::before {
+                content: "";
+                position: absolute;
+                top: 14px;
+                left: 30px;
+                right: 30px;
+                height: 3px;
+                background: linear-gradient(90deg, #1565c0, #42a5f5, #1565c0);
+            }
+
+            .step {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 18%;
+                z-index: 1;
+            }
+
+            .step-num {
+                width: 28px;
+                height: 28px;
+                background: linear-gradient(135deg, #1565c0, #0d47a1);
+                color: #fff;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 11px;
+                font-weight: 800;
+                border: 2px solid #fff;
+                box-shadow: 0 2px 6px rgba(21, 101, 192, 0.3);
+            }
+
+            .step-title {
+                font-size: 7px;
+                font-weight: 700;
+                color: #1565c0;
+                text-align: center;
+                margin-top: 4px;
+            }
+
+            .step-desc {
+                font-size: 6px;
+                color: #666;
+                text-align: center;
+                line-height: 1.2;
+            }
+
+            /* ARCHITECTURE */
+            .arch-section {
+                background: #fff;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                padding: 10px;
+                margin-bottom: 10px;
+            }
+
+            .arch-title {
+                color: #1565c0;
+                font-size: 11px;
+                font-weight: 800;
+                font-style: italic;
+                margin-bottom: 8px;
+            }
+
+            .arch-grid {
+                display: flex;
+                justify-content: space-around;
+            }
+
+            .arch-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .arch-icon {
+                width: 40px;
+                height: 40px;
+                background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+                border: 2px solid #90caf9;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+            }
+
+            .arch-name {
+                font-size: 8px;
+                font-weight: 700;
+                color: #333;
+                margin-top: 3px;
+            }
+
+            .arch-sub {
+                font-size: 6px;
+                color: #666;
+            }
+
+            /* TOOLS SECTION */
+            .tools-section {
+                background: #fff;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                padding: 10px;
+                margin-bottom: 10px;
+            }
+
+            .tools-title {
+                color: #1565c0;
+                font-size: 11px;
+                font-weight: 800;
+                font-style: italic;
+                margin-bottom: 8px;
+            }
+
+            .tools-grid {
+                display: flex;
+                justify-content: space-around;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .tool-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                min-width: 60px;
+            }
+
+            .tool-icon {
+                width: 36px;
+                height: 36px;
+                background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+                border: 2px solid #bdbdbd;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 16px;
+            }
+
+            .tool-icon.php {
+                background: linear-gradient(135deg, #777bb4, #4f5b93);
+                border-color: #777bb4;
+            }
+
+            .tool-icon.mysql {
+                background: linear-gradient(135deg, #00758f, #f29111);
+                border-color: #00758f;
+            }
+
+            .tool-icon.bootstrap {
+                background: linear-gradient(135deg, #7952b3, #5a3d8a);
+                border-color: #7952b3;
+            }
+
+            .tool-icon.js {
+                background: linear-gradient(135deg, #f7df1e, #e5cd1b);
+                border-color: #f7df1e;
+            }
+
+            .tool-icon.google {
+                background: linear-gradient(135deg, #4285f4, #34a853);
+                border-color: #4285f4;
+            }
+
+            .tool-icon.pdo {
+                background: linear-gradient(135deg, #1565c0, #0d47a1);
+                border-color: #1565c0;
+            }
+
+            .tool-icon.icons {
+                background: linear-gradient(135deg, #7952b3, #5a3d8a);
+                border-color: #7952b3;
+            }
+
+            .tool-name {
+                font-size: 7px;
+                font-weight: 700;
+                color: #333;
+                margin-top: 3px;
+                text-align: center;
+            }
+
+            .tool-desc {
+                font-size: 5.5px;
+                color: #666;
+                text-align: center;
+            }
+        </style>
+
+        <!-- Content Grid: Mục tiêu + Tính năng -->
+        <div class="content-grid">
+            <div class="section-box">
+                <div class="section-title">Mục tiêu</div>
+                <ul class="objective-list">
+                    <li>Xây dựng <strong>môi trường trao đổi kiến thức</strong> cho sinh viên CNTT</li>
+                    <li>Hỗ trợ <strong>đặt câu hỏi, trả lời</strong> và <strong>đánh giá sao</strong> (1-5⭐)</li>
+                    <li>Tích hợp <strong>Gamification</strong> với <strong>25 huy hiệu</strong> vinh danh</li>
+                    <li>Xây dựng <strong>bảng xếp hạng</strong> và <strong>điểm uy tín</strong></li>
+                    <li>Khuyến khích người dùng <strong>tham gia tích cực</strong> vào cộng đồng</li>
+                </ul>
+            </div>
+            <div class="section-box">
+                <div class="section-title">Tính năng chính</div>
+                <ul class="feature-list">
+                    <li>Đặt câu hỏi với code block & upload ảnh</li>
+                    <li>Trả lời & chấp nhận câu trả lời hay nhất</li>
+                    <li>Đánh giá sao (1-5⭐) cho câu hỏi & trả lời</li>
+                    <li>Tags phân loại theo chuyên ngành</li>
+                    <li>Đăng nhập thường & Google OAuth 2.0</li>
+                    <li>Chuỗi đăng nhập liên tiếp (Login Streak)</li>
+                    <li>Báo cáo vi phạm & kiểm duyệt nội dung</li>
+                    <li>Phân quyền Admin / Moderator / User</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Database - Simplified với Big Number -->
+        <div class="db-section">
+            <div class="section-title">Cơ sở dữ liệu</div>
+            <div class="db-content">
+                <div class="db-stats">
+                    <div class="big-number">15+</div>
+                    <div class="label">Bảng quan hệ</div>
+                </div>
+                <div class="db-tables">
+                    <div class="db-table-item">NGUOIDUNG</div>
+                    <div class="db-table-item">VAITRO</div>
+                    <div class="db-table-item highlight">HUYHIEU</div>
+                    <div class="db-table-item highlight">CAUHOI</div>
+                    <div class="db-table-item highlight">TRALOI</div>
+                    <div class="db-table-item">THONGBAO</div>
+                    <div class="db-table-item">TAG</div>
+                    <div class="db-table-item">VOTE</div>
+                    <div class="db-table-item">LICHSU_DIEM</div>
+                    <div class="db-table-item">NHAN</div>
+                    <div class="db-table-item">DAT</div>
+                    <div class="db-table-item">LUOTXEM</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Process -->
+        <div class="process-section">
+            <div class="process-title">Quy trình sử dụng</div>
+            <div class="process-steps">
+                <div class="step">
+                    <div class="step-num">01</div>
+                    <div class="step-title">Đăng ký</div>
+                    <div class="step-desc">Tạo tài khoản hoặc Google</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">02</div>
+                    <div class="step-title">Đặt câu hỏi</div>
+                    <div class="step-desc">Với tags phân loại</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">03</div>
+                    <div class="step-title">Trả lời</div>
+                    <div class="step-desc">Đánh giá sao (1-5⭐)</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">04</div>
+                    <div class="step-title">Chấp nhận</div>
+                    <div class="step-desc">Câu trả lời hay nhất</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">05</div>
+                    <div class="step-title">Vinh danh</div>
+                    <div class="step-desc">Nhận huy hiệu</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Architecture -->
+        <div class="arch-section">
+            <div class="arch-title">Kiến trúc hệ thống</div>
+            <div class="arch-grid">
+                <div class="arch-item">
+                    <div class="arch-icon">👥</div>
+                    <div class="arch-name">Client</div>
+                    <div class="arch-sub">Người dùng</div>
+                </div>
+                <div class="arch-item">
+                    <div class="arch-icon">🌐</div>
+                    <div class="arch-name">Frontend</div>
+                    <div class="arch-sub">Bootstrap 5</div>
+                </div>
+                <div class="arch-item">
+                    <div class="arch-icon">🐘</div>
+                    <div class="arch-name">Backend</div>
+                    <div class="arch-sub">PHP 7.4+</div>
+                </div>
+                <div class="arch-item">
+                    <div class="arch-icon">🗄️</div>
+                    <div class="arch-name">Database</div>
+                    <div class="arch-sub">MySQL</div>
+                </div>
+                <div class="arch-item">
+                    <div class="arch-icon">🔐</div>
+                    <div class="arch-name">OAuth</div>
+                    <div class="arch-sub">Google</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tools Section -->
+        <div class="tools-section">
+            <div class="tools-title">🛠️ Công nghệ sử dụng</div>
+            <div class="tools-grid">
+                <div class="tool-item">
+                    <div class="tool-icon php">🐘</div>
+                    <div class="tool-name">PHP 7.4+</div>
+                    <div class="tool-desc">Backend</div>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon mysql">🗄️</div>
+                    <div class="tool-name">MySQL</div>
+                    <div class="tool-desc">Database</div>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon bootstrap">🅱️</div>
+                    <div class="tool-name">Bootstrap 5</div>
+                    <div class="tool-desc">CSS Framework</div>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon js">⚡</div>
+                    <div class="tool-name">JavaScript</div>
+                    <div class="tool-desc">ES6+</div>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon google">🔐</div>
+                    <div class="tool-name">OAuth 2.0</div>
+                    <div class="tool-desc">Google Login</div>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon pdo">🛡️</div>
+                    <div class="tool-name">PDO</div>
+                    <div class="tool-desc">Database Driver</div>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon icons">🎨</div>
+                    <div class="tool-name">BS Icons</div>
+                    <div class="tool-desc">Icon Library</div>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            /* HIGHLIGHT SECTION - Điểm nổi bật với Big Numbers */
+            .highlight-section {
+                background: linear-gradient(135deg, #fffef5, #fffde7);
+                border: 2px solid #ffc107;
+                border-radius: 8px;
+                padding: 12px;
+                margin-bottom: 10px;
+            }
+
+            .highlight-title {
+                color: #e65100;
+                font-size: 12px;
+                font-weight: 800;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+
+            .highlight-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 10px;
+            }
+
+            .highlight-item {
+                text-align: center;
+                padding: 8px;
+                background: #fff;
+                border-radius: 8px;
+                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+            }
+
+            .highlight-item .icon {
+                font-size: 24px;
+                margin-bottom: 4px;
+                filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.35));
+            }
+
+            .highlight-item .number {
+                font-size: 28px;
+                font-weight: 900;
+                color: #1565c0;
+                line-height: 1;
+            }
+
+            .highlight-item .number.gold {
+                color: #f57f17;
+            }
+
+            .highlight-item .number.green {
+                color: #2e7d32;
+            }
+
+            .highlight-item .number.red {
+                color: #c62828;
+            }
+
+            .highlight-item .text {
+                font-size: 8px;
+                color: #555;
+                margin-top: 2px;
+                font-weight: 500;
+            }
+
+            /* BOTTOM INFO */
+            .bottom-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .tech-box {
+                background: #fff;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                padding: 10px 12px 8px 12px;
+            }
+
+            .tech-title {
+                color: #1565c0;
+                font-size: 10px;
+                font-weight: 800;
+                margin-bottom: 6px;
+            }
+
+            .tech-list {
+                list-style: none;
+            }
+
+            .tech-list li {
+                font-size: 8px;
+                padding: 3px 0;
+                display: flex;
+                justify-content: space-between;
+                border-bottom: 1px dotted #eee;
+            }
+
+            .tech-list li:last-child {
+                border-bottom: none;
+            }
+
+            .tech-list li span {
+                color: #43a047;
+                font-weight: 600;
+            }
+
+            .security-box {
+                background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+                border: 1px solid #81c784;
+                border-radius: 5px;
+                padding: 10px 12px 8px 12px;
+            }
+
+            .security-title {
+                color: #2e7d32;
+                font-size: 10px;
+                font-weight: 800;
+                margin-bottom: 6px;
+            }
+
+            .security-list {
+                list-style: none;
+            }
+
+            .security-list li {
+                font-size: 8px;
+                padding: 3px 0 3px 12px;
+                position: relative;
+                color: #333;
+            }
+
+            .security-list li::before {
+                content: "✓";
+                color: #43a047;
+                position: absolute;
+                left: 0;
+                font-weight: bold;
+            }
+        </style>
+
+        <!-- Highlight Section - Big Numbers -->
+        <div class="highlight-section">
+            <div class="highlight-title">🏆 ĐIỂM NỔI BẬT - HỆ THỐNG GAMIFICATION</div>
+            <div class="highlight-grid">
+                <div class="highlight-item">
+                    <div class="icon">🎖️</div>
+                    <div class="number gold">25</div>
+                    <div class="text">Huy hiệu vinh danh</div>
+                </div>
+                <div class="highlight-item">
+                    <div class="icon">⭐</div>
+                    <div class="number">1-5</div>
+                    <div class="text">Đánh giá sao</div>
+                </div>
+                <div class="highlight-item">
+                    <div class="icon">🏅</div>
+                    <div class="number green">TOP</div>
+                    <div class="text">Bảng xếp hạng</div>
+                </div>
+                <div class="highlight-item">
+                    <div class="icon">🔥</div>
+                    <div class="number red">7+</div>
+                    <div class="text">Chuỗi đăng nhập</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Grid -->
+        <div class="bottom-grid">
+            <div class="tech-box">
+                <div class="tech-title">📊 Thông số kỹ thuật</div>
+                <ul class="tech-list">
+                    <li>Số bảng CSDL <span>15+</span></li>
+                    <li>Số trang PHP <span>30+</span></li>
+                    <li>Responsive <span>100%</span></li>
+                    <li>Phân quyền <span>3 cấp</span></li>
+                    <li>Authentication <span>OAuth 2.0</span></li>
+                </ul>
+            </div>
+            <div class="security-box">
+                <div class="security-title">🔒 Bảo mật & Hiệu suất</div>
+                <ul class="security-list">
+                    <li>PDO Prepared Statements chống SQL Injection</li>
+                    <li>Password hashing an toàn</li>
+                    <li>Session management bảo mật</li>
+                    <li>XSS Protection với htmlspecialchars()</li>
+                    <li>Input validation đầy đủ</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function exportToImage() {
+            const poster = document.getElementById('poster');
+            const btn = document.querySelector('.export-btn');
+            btn.textContent = '⏳ Đang xuất...';
+            btn.disabled = true;
+
+            html2canvas(poster, {
+                scale: 3,
+                useCORS: true,
+                backgroundColor: '#f8f9fa'
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'poster-a4.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                btn.textContent = '📷 Xuất ra ảnh PNG';
+                btn.disabled = false;
+            });
+        }
+    </script>
+</body>
+
+</html>
